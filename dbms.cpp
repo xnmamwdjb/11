@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+FILE *fp;
+char dbf[20];
 #include "select.cpp"
 #include "dml.cpp"
 #include "ddl.cpp"
@@ -19,6 +21,7 @@
 } TableMode, *PTableMode; //字段结构
 */
 
+
 void transfer(char *cmd)
 {
     for (int i = 0; i < strlen(cmd); i++)
@@ -31,7 +34,7 @@ int main()
     printf("新建数据库: create database 数据库名\n");
     printf("删除数据库: drop database 数据库名\n");
     printf("打开数据库: open database 数据库名\n");
-    printf("关闭数据库: close 数据库名\n");
+    printf("关闭数据库: close database 数据库名\n");
     printf("添加新表  : create table  表名\n");
     printf("            (\n");
     printf("            字段名 数据类型 字长 是否为KEY键（y/n） 是否可空（y/n）,\n");
@@ -81,13 +84,11 @@ int main()
             if (strcmp(cmd, "database") == 0) //database
             {
                 scanf("%s", name);
-                transfer(name);
                 DropDataBase(name);
             }
             else if (strcmp(cmd, "table") == 0) //table
             {
                 scanf("%s", name);
-                transfer(name);
                 DropTable(name);
             }
             else
@@ -103,13 +104,11 @@ int main()
             if (strcmp(cmd, "database") == 0) //database
             {
                 scanf("%s", name);
-                transfer(name);
                 OpenDataBase(name);
             }
             else if (strcmp(cmd, "table") == 0) //table
             {
                 scanf("%s", name);
-                transfer(name);
                 OpenTable(name);
             }
             else
@@ -119,9 +118,15 @@ int main()
         {
             //close 数据库名
             char name[20];
-            scanf("%s", name);
-            transfer(name);
-            CloseDataBase(name);
+            scanf("%s", cmd);
+            transfer(cmd);
+            if (strcmp(cmd, "database") == 0) //database
+            {
+                scanf("%s", name);
+                CloseDataBase(name);
+            }
+            else
+                printf("命令语句有误!\n");
         }
         else if (strcmp(cmd, "insert") == 0) //insert
         {
@@ -132,7 +137,6 @@ int main()
             if (strcmp(cmd, "into") == 0) //into
             {
                 scanf("%s%s", name, value);
-                transfer(name);
                 Insert(name, value);
             }
             else
@@ -147,18 +151,15 @@ int main()
             if (strcmp(cmd, "from") == 0) //from
             {
                 scanf("%s", tableName);
-                transfer(tableName);
                 scanf("%s", cmd);
                 transfer(cmd);
                 if (strcmp(cmd, "where") == 0) //where
                 {
                     scanf("%s", colName);
-                    transfer(colName);
                     scanf("%s", equal);
                     if (strcmp(equal, "=") == 0) //=
                     {
                         scanf("%s", value);
-                        transfer(value);
                         Delete(tableName, colName, value);
                     }
                     else
@@ -175,7 +176,6 @@ int main()
             //update 列名 = 新值 from 表名 where 列名 = 值(值可为all, 表全部范围)
             char newColName[20], equal1[5], newValue[20], tableName[20], colName[20], equal2[5], value[20];
             scanf("%s", newColName);
-            transfer(newColName);
             scanf("%s", equal1);
             if (strcmp(equal1, "=") == 0) //=
             {
@@ -185,18 +185,15 @@ int main()
                 if (strcmp(cmd, "from") == 0) //from
                 {
                     scanf("%s", tableName);
-                    transfer(tableName);
                     scanf("%s", cmd);
                     transfer(cmd);
                     if (strcmp(cmd, "where") == 0) //where
                     {
                         scanf("%s", colName);
-                        transfer(colName);
                         scanf("%s", equal2);
                         if (strcmp(equal2, "=") == 0) //=
                         {
                             scanf("%s", value);
-                            transfer(value);
                             update(newColName, newValue, tableName, colName, value);
                         }
                         else
@@ -211,29 +208,25 @@ int main()
             else
                 printf("命令语句有误4!\n");
         }
-        else if (strcmp(cmd, "select")==0)
+        else if (strcmp(cmd, "select")==0) //select
         {
             //select 列名(all表示所有列)  from 表名 where 列名 = 值(值可为all,表全部范围)"
             char colName[20], tableName[20], whereColName[20], equal[2], value[20];
             scanf("%s", colName);
-            transfer(colName);
             scanf("%s", cmd);
             transfer(cmd);
             if (strcmp(cmd, "from") == 0) //from
             {
                 scanf("%s", tableName);
-                transfer(tableName);
                 scanf("%s", cmd);
                 transfer(cmd);
                 if (strcmp(cmd, "where") == 0) //where
                 {
                     scanf("%s", whereColName);
-                    transfer(whereColName);
                     scanf("%s", equal);
                     if (strcmp(equal, "=") == 0) //=
                     {
                         scanf("%s", value);
-                        transfer(value);
                         Select(colName, tableName, whereColName, value);
                     }
                     else
