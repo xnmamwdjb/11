@@ -1,16 +1,14 @@
 #include <stdio.h>
 #include <string.h>
+
 FILE *fp;
 char dbf[20];
-#include "select.cpp"
-#include "dml.cpp"
-#include "ddl.cpp"
 
 #define MAX_SIZE 50          //表中所含字段最大长度
 #define FILE_NAME_LENGTH 15  //文件名最大长度
 #define FIELD_NAME_LENGTH 15 //字段名最大长度
 
-/*typedef struct
+typedef struct
 {
     char sFieldName[FIELD_NAME_LENGTH]; //字段名
     char sType[8]; //字段类型
@@ -19,8 +17,10 @@ char dbf[20];
     char bNullFlag; //字段是否允许为空
     char bValidFlag; //字段是否有效
 } TableMode, *PTableMode; //字段结构
-*/
 
+#include "select.cpp"
+#include "dml.cpp"
+#include "ddl.cpp"
 
 void transfer(char *cmd)
 {
