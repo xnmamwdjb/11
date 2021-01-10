@@ -1,7 +1,12 @@
 #include<stdio.h>
 #include<string.h>
+#include"ddl.h"
+
+char dname[30];
 
 void Insert(char* name,char* value){
+    OpenDataBase(dname);
+    OpenTable(name);
     printf("insert into %s %s\n",name,value);
 }
 void Delete(char* tableName,char* colName,char* value){

@@ -37,8 +37,8 @@ int main()
     printf("关闭数据库: close database 数据库名\n");
     printf("添加新表  : create table  表名\n");
     printf("            (\n");
-    printf("            字段名 数据类型 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
-    printf("            字段名 数据类型 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
+    printf("            字段名 数据类型 字长 是否为KEY键（y/n） 是否可空（y/n）,\n");
+    printf("            字段名 数据类型 字长 是否为KEY键（y/n） 是否可空（y/n）,\n");
     printf("            …          …\n");
     printf("            )\n");
     printf("查看表结构: open table 表名\n");
@@ -131,7 +131,7 @@ int main()
         else if (strcmp(cmd, "insert") == 0) //insert
         {
             //insert into 表名(field1,field2,…) values(value1,value2,…)"
-            char value[100], name[100];
+            char value[100], name[100];//name是表名加上相应的字段名称，需要二次处理保留其中的值，values也需要二次处理
             scanf("%s", cmd);
             transfer(cmd);
             if (strcmp(cmd, "into") == 0) //into
