@@ -4,9 +4,9 @@
 
 int execmd(char *cmd, char *result)
 {
-    strcat(cmd," 2>1.txt");
+    strcat(cmd, " 2>1.txt");
     if (system(cmd))
-        return 0; //è¿”å›0è¡¨ç¤ºè¿è¡Œå¤±è´¥
+        return 0; //·µ»Ø0±íÊ¾ÔËĞĞÊ§°Ü
     FILE *p;
     if ((p = fopen("1.txt", "r+")) != NULL)
     {
@@ -18,7 +18,7 @@ int execmd(char *cmd, char *result)
         else
             return 0;
     }
-    return 1; //è¿”å›1è¡¨ç¤ºè¿è¡ŒæˆåŠŸ
+    return 1; //·µ»Ø1±íÊ¾ÔËĞĞ³É¹¦
 }
 
 void CreateDataBase(char *name)
@@ -28,21 +28,21 @@ void CreateDataBase(char *name)
     strcat(dbf, ".dbf");
     if (fp != NULL)
         fclose(fp);
-    if ((fp = fopen(dbf, "rb+")) != NULL) //æ•°æ®åº“å·²å­˜åœ¨
+    if ((fp = fopen(dbf, "rb+")) != NULL) //Êı¾İ¿âÒÑ´æÔÚ
     {
         printf("Database already exists!\n");
         printf("Create database %s failed!\n", name);
         return;
         //exit(1);
     }
-    if ((fp = fopen(dbf, "ab+")) == NULL) //æœªæˆåŠŸåˆ›å»º
+    if ((fp = fopen(dbf, "ab+")) == NULL) //Î´³É¹¦´´½¨
     {
         printf("Create file error!\n");
         printf("Create database %s failed!\n", name);
         strcpy(dbf, "");
         //exit(1);
     }
-    else //åˆ›å»ºæˆåŠŸ
+    else //´´½¨³É¹¦
         printf("Create database %s successfully!\n", name);
 }
 
@@ -54,27 +54,27 @@ void OpenDataBase(char *name)
     strcat(ndbf, ".dbf");
     strcpy(dbf, name);
     strcat(dbf, ".dbf");
-    if (strcmp(ndbf, dbf) == 0) //æ•°æ®åº“å·²æ‰“å¼€
+    if (strcmp(ndbf, dbf) == 0) //Êı¾İ¿âÒÑ´ò¿ª
     {
         printf("Database already opens!\n");
         return;
     }
     if (fp != NULL)
         fclose(fp);
-    if ((fp = fopen(dbf, "rb+")) == NULL) //æ‰“å¼€æ–‡ä»¶å¤±è´¥
+    if ((fp = fopen(dbf, "rb+")) == NULL) //´ò¿ªÎÄ¼şÊ§°Ü
     {
         printf("Open file error!\n");
         strcpy(dbf, "");
         //exit(1);
     }
-    else //æ‰“å¼€æˆåŠŸ
+    else //´ò¿ª³É¹¦
         printf("Open database %s successfully!\n", name);
 }
 
 void CloseDataBase(char *name)
 {
     //printf("close database %s\n", name);
-    if (strcmp(dbf, "") == 0) //å½“å‰æ²¡æœ‰æ‰“å¼€çš„æ•°æ®åº“
+    if (strcmp(dbf, "") == 0) //µ±Ç°Ã»ÓĞ´ò¿ªµÄÊı¾İ¿â
     {
         printf("No database is open!\n");
         printf("Close %s failed!\n", name);
@@ -82,12 +82,12 @@ void CloseDataBase(char *name)
     }
     strcpy(dbf, name);
     strcat(dbf, ".dbf");
-    if (fclose(fp) == 0) //å…³é—­æˆåŠŸ
+    if (fclose(fp) == 0) //¹Ø±Õ³É¹¦
     {
         printf("Close %s successfully!\n", name);
         strcpy(dbf, "");
     }
-    else //å…³é—­å¤±è´¥
+    else //¹Ø±ÕÊ§°Ü
         printf("Close database %s failed!\n", name);
 }
 
@@ -99,7 +99,7 @@ void DropDataBase(char *name)
     strcat(command, name);
     strcat(command, ".dbf");
     char result[1024] = "";
-    if (1 == execmd(command, result)) //æ‰§è¡Œå‘½ä»¤ï¼Œè‹¥æ‰§è¡ŒæˆåŠŸè¿”å›1
+    if (1 == execmd(command, result)) //Ö´ĞĞÃüÁî£¬ÈôÖ´ĞĞ³É¹¦·µ»Ø1
     {
         printf("drop database %s successfully!\n", name);
     }
@@ -113,6 +113,53 @@ void DropDataBase(char *name)
 void CreateTable(char *name)
 {
     printf("create table %s\n", name);
+    fp = fopen("data.dbf", "ab+");
+    char temp[10];
+    scanf("%s", temp);
+    if (strcmp(temp, "(") == 0)
+    {
+        TableMode FieldSet[MAX_SIZE];
+        int num = 0;
+        while (1)
+        {
+            scanf("%15s%8s%d", FieldSet[num].sFieldName, FieldSet[num].sType, &(FieldSet[num].iSize));
+            char tempKey[10];
+            scanf("%s", tempKey);
+            FieldSet[num].bKey = tempKey[0];
+            printf("%s%s%d%c", FieldSet[num].sFieldName, FieldSet[num].sType, FieldSet[num].iSize, FieldSet[num].bKey);
+            char tempNull[10];
+            scanf("%s", tempNull);
+            FieldSet[num].bNullFlag = tempNull[0];
+            FieldSet[num].bValidFlag = 'y';
+            if (FieldSet[num].bKey != 'n' && FieldSet[num].bKey != 'y')
+            {
+                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                return;
+            }
+            else if (FieldSet[num].bNullFlag != 'n' && FieldSet[num].bNullFlag != 'y')
+            {
+                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                return;
+            }
+            num++;
+            if (tempNull[1] == ',')
+                continue;
+            else
+                break;
+        }
+        scanf("%s", temp);
+        if (strcmp(temp, ")") == 0)
+        {
+            fwrite("~", sizeof(char), 1, fp);
+            fwrite(name, sizeof(char), FILE_NAME_LENGTH, fp);
+            fwrite(&num, sizeof(int), 1, fp);
+            fwrite(FieldSet, sizeof(TableMode), num, fp);
+        }
+        else
+            printf("ÃüÁîÓï¾äÓĞÎó!\n");
+    }
+    else
+        printf("ÃüÁîÓï¾äÓĞÎó!\n");
 }
 
 void DropTable(char *name)
