@@ -37,8 +37,8 @@ int main()
     printf("关闭数据库: close database 数据库名\n");
     printf("添加新表  : create table  表名\n");
     printf("            (\n");
-    printf("            字段名 数据类型 字长 是否为KEY键（y/n） 是否可空（y/n）,\n");
-    printf("            字段名 数据类型 字长 是否为KEY键（y/n） 是否可空（y/n）,\n");
+    printf("            字段名 数据类型 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
+    printf("            字段名 数据类型 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
     printf("            …          …\n");
     printf("            )\n");
     printf("查看表结构: open table 表名\n");
