@@ -3,6 +3,10 @@
 
 FILE *fp;
 char dbf[20];
+FILE *dp;//定义指向表的指针，用来完成对表的操作
+char dat[20];
+int dopens = 0;//值为1标志数据库是否已经打开，如果未打开，不允许对表进行增删改
+int topens = 0;//值为1标志表已经打开，如果未打开，不允许对表进行增删改
 
 #define MAX_SIZE 50          //表中所含字段最大长度
 #define FILE_NAME_LENGTH 15  //文件名最大长度
@@ -131,55 +135,37 @@ int main()
         else if (strcmp(cmd, "insert") == 0) //insert
         {
             //insert into 表名(field1,field2,…) values(value1,value2,…)"
-            char value[100], name[100];
-            scanf("%s", cmd);
-            transfer(cmd);
-            if (strcmp(cmd, "into") == 0) //into
-            {
-                scanf("%s%s", name, value);
-                Insert(name, value);
+            topens = 1;
+            if(dopens == 0){
+                printf("数据库未打开，禁止进行数据插入操作\n");
             }
-            else
-                printf("命令语句有误!\n");
-        }
-        else if (strcmp(cmd, "delete") == 0) //delete
-        {
-            //delete from 表名 where 列名 = 值(值可为all, 表全部范围)
-            char tableName[20], colName[20], equal[2], value[100];
-            scanf("%s", cmd);
-            transfer(cmd);
-            if (strcmp(cmd, "from") == 0) //from
-            {
-                scanf("%s", tableName);
+            else if(topens == 0){
+                printf("表未打开，禁止进行数据插入操作\n");
+            }
+            else{
+                char value[100], name[100];
                 scanf("%s", cmd);
                 transfer(cmd);
-                if (strcmp(cmd, "where") == 0) //where
+                if (strcmp(cmd, "into") == 0) //into
                 {
-                    scanf("%s", colName);
-                    scanf("%s", equal);
-                    if (strcmp(equal, "=") == 0) //=
-                    {
-                        scanf("%s", value);
-                        Delete(tableName, colName, value);
-                    }
-                    else
-                        printf("命令语句有误!\n");
+                    scanf("%s%s", name, value);
+                    Insert(name, value);
                 }
                 else
                     printf("命令语句有误!\n");
             }
-            else
-                printf("命令语句有误!\n");
         }
-        else if (strcmp(cmd, "update")==0) //update
+        else if (strcmp(cmd, "delete") == 0) //delete
         {
-            //update 列名 = 新值 from 表名 where 列名 = 值(值可为all, 表全部范围)
-            char newColName[20], equal1[5], newValue[20], tableName[20], colName[20], equal2[5], value[20];
-            scanf("%s", newColName);
-            scanf("%s", equal1);
-            if (strcmp(equal1, "=") == 0) //=
-            {
-                scanf("%s", newValue);
+            //delete from 表名 where 列名 = 值(值可为all, 表全部范围)
+            if(dopens == 0){
+                printf("数据库未打开，禁止进行数据删除操作\n");
+            }
+            else if(topens == 0){
+                printf("表未打开，禁止进行数据删除操作\n");
+            }
+            else{
+                char tableName[20], colName[20], equal[2], value[100];
                 scanf("%s", cmd);
                 transfer(cmd);
                 if (strcmp(cmd, "from") == 0) //from
@@ -190,23 +176,66 @@ int main()
                     if (strcmp(cmd, "where") == 0) //where
                     {
                         scanf("%s", colName);
-                        scanf("%s", equal2);
-                        if (strcmp(equal2, "=") == 0) //=
+                        scanf("%s", equal);
+                        if (strcmp(equal, "=") == 0) //=
                         {
                             scanf("%s", value);
-                            update(newColName, newValue, tableName, colName, value);
+                            Delete(tableName, colName, value);
                         }
                         else
-                            printf("命令语句有误1!\n");
+                            printf("命令语句有误!\n");
                     }
                     else
-                        printf("命令语句有误2!\n");
+                        printf("命令语句有误!\n");
                 }
                 else
-                    printf("命令语句有误3!\n");
+                    printf("命令语句有误!\n");
             }
-            else
-                printf("命令语句有误4!\n");
+        }
+        else if (strcmp(cmd, "update")==0) //update
+        {
+            //update 列名 = 新值 from 表名 where 列名 = 值(值可为all, 表全部范围)
+            if(dopens == 0){
+                printf("数据库未打开，禁止进行数据更新操作\n");
+            }
+            else if(topens == 0){
+                printf("表未打开，禁止进行数据更新操作\n");
+            }
+            else{
+                char newColName[20], equal1[5], newValue[20], tableName[20], colName[20], equal2[5], value[20];
+                scanf("%s", newColName);
+                scanf("%s", equal1);
+                if (strcmp(equal1, "=") == 0) //=
+                {
+                    scanf("%s", newValue);
+                    scanf("%s", cmd);
+                    transfer(cmd);
+                    if (strcmp(cmd, "from") == 0) //from
+                    {
+                        scanf("%s", tableName);
+                        scanf("%s", cmd);
+                        transfer(cmd);
+                        if (strcmp(cmd, "where") == 0) //where
+                        {
+                            scanf("%s", colName);
+                            scanf("%s", equal2);
+                            if (strcmp(equal2, "=") == 0) //=
+                            {
+                                scanf("%s", value);
+                                update(newColName, newValue, tableName, colName, value);
+                            }
+                            else
+                                printf("命令语句有误1!\n");
+                        }
+                        else
+                            printf("命令语句有误2!\n");
+                    }
+                    else
+                        printf("命令语句有误3!\n");
+                }
+                else
+                    printf("命令语句有误4!\n");
+            }
         }
         else if (strcmp(cmd, "select")==0) //select
         {
