@@ -259,6 +259,7 @@ int main()
         }
         else
             printf("ÊäÈëÃüÁî´íÎó,Çë¼ì²é!\n");
+        printf("\n");
     }
     return 0;
 }
