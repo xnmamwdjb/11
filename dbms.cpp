@@ -23,7 +23,7 @@ typedef struct
 } TableMode, *PTableMode; //�ֶνṹ
 
 #include "select.cpp"
-#include "dml.cpp"
+#include "dml.c"
 #include "ddl.c"
 
 void transfer(char *cmd)

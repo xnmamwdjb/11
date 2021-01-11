@@ -19,7 +19,10 @@ int execmd(char *cmd, char *result)
             return 0;
     }
     else
+    {
+        fclose(p);
         return 1; //不存在1.txt 默认执行成功
+    }
 }
 
 void CreateDataBase(char *name)
@@ -78,7 +81,7 @@ void OpenDataBase(char *name)
 void CloseDataBase(char *name)
 {
     //printf("close database %s\n", name);
-    if (dopens == 0) //当前没有打开的数据库
+    if (fp == NULL || dopens == 0) //当前没有打开的数据库
     {
         printf("No database is open!\n");
         printf("Close %s failed!\n", name);
@@ -94,7 +97,7 @@ void CloseDataBase(char *name)
     }
     else if (fclose(fp) == 0) //关闭成功
     {
-        printf("Close %s successfully!\n", name);
+        printf("Close database %s successfully!\n", name);
         strcpy(dbf, "");
         fclose(fp);
         dopens = 0;
@@ -138,29 +141,32 @@ void ViewDataBase(char *name)
     FILE *p;
     if ((p = fopen(tempdbf, "rb")) == NULL) //打开失败，没有该数据库
         printf("No such database!\n");
-    int haveTable=0;
+    int haveTable = 0;
     while (!feof(p))
     {
         int num;
-        TableMode FieldSet[MAX_SIZE];
         char tempc;
         int i = fread(&tempc, sizeof(char), 1, p);
         if (!i) //读取失败，返回
+        {
+            fclose(p);
             return;
+        }
         if (tempc != '~') //文件格式有问题，返回
         {
             printf("%s format not correct!\n", tempdbf);
             fclose(p);
             return;
         }
-        if(!haveTable){ //有表则输出
-            haveTable=1;
+        if (!haveTable)
+        { //有表则输出
+            haveTable = 1;
             printf("There are tables in database %s:\n", name);
         }
         char tname[20];
         fread(tname, sizeof(char), FILE_NAME_LENGTH, p); //读取表格信息
         fread(&num, sizeof(int), 1, p);
-        fread(FieldSet, sizeof(TableMode), num, p);
+        fseek(p, long(sizeof(TableMode) * num), SEEK_CUR);
         printf("%s\n", tname);
     }
     fclose(p);
@@ -170,8 +176,11 @@ void CreateTable(char *name)
 {
     //printf("create table %s\n", name);
     //fp = fopen("data.dbf", "ab+");
-    if (fp == NULL||dopens==0) //当前未打开数据库
+    if (fp == NULL || dopens == 0) //当前未打开数据库
+    {
         printf("No database is open!\nPlease open database first!\n");
+        return;
+    }
     fseek(fp, 0L, SEEK_END); //移动指针到文件尾
     char temp[10];
     scanf("%s", temp);
@@ -189,7 +198,7 @@ void CreateTable(char *name)
             char tempNull[10];
             scanf("%s", tempNull); //读取字段是否为空
             FieldSet[num].bNullFlag = tempNull[0];
-            FieldSet[num].bValidFlag = 'y'; //默认字段有效
+            FieldSet[num].bValidFlag = 'y';                             //默认字段有效
             if (FieldSet[num].bKey != 'n' && FieldSet[num].bKey != 'y') //输入bKey不合法
             {
                 printf("命令语句有误!\n");
@@ -213,8 +222,8 @@ void CreateTable(char *name)
             fwrite(name, sizeof(char), FILE_NAME_LENGTH, fp);
             fwrite(&num, sizeof(int), 1, fp);
             fwrite(FieldSet, sizeof(TableMode), num, fp);
-            fseek(fp,0L,SEEK_SET);
-            printf("create table %s successfully!\n",name);
+            rewind(fp);
+            printf("create table %s successfully!\n", name);
         }
         else
             printf("命令语句有误!\n");
@@ -223,39 +232,122 @@ void CreateTable(char *name)
         printf("命令语句有误!\n");
 }
 
-void DropTable(char *name)
-{
-    printf("drop table %s\n", name);
-}
-
 int OpenTable(char *name, PTableMode FieldSet)
 {
     //printf("open table %s\n", name);
     //fp = fopen("data.dbf", "rb+");
-    if (fp == NULL) //未打开数据库
+    if (fp == NULL || dopens == 0) //当前未打开数据库
+    {
         printf("No database is open!\nPlease open database first!\n");
-    rewind(fp); //移动到文件开始
+        return -1;
+    }
+    rewind(fp);
     while (!feof(fp))
     {
         char tempc;
-        int i = fread(&tempc, sizeof(char), 1, fp);
-        if (tempc != '~' || !i) //格式不对
+        fread(&tempc, sizeof(char), 1, fp);
+        if (tempc != '~') //格式不对
         {
             printf("%s format not correct!\n", dbf);
+            rewind(fp);
             return -1; //-1表示没找到
         }
         char tempName[20];
         int num = 0;
         fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //读取表名
-        fread(&num, sizeof(int), 1, fp); //读取字段数
-        fread(FieldSet, sizeof(TableMode), num, fp); //读取结构
-        if (strcmp(tempName, name) == 0) //找到了表
+        fread(&num, sizeof(int), 1, fp);                     //读取字段数
+        fread(FieldSet, sizeof(TableMode), num, fp);         //读取结构
+        if (strcmp(tempName, name) == 0)                     //找到了表
         {
-            topens=1;
+            topens = 1;
+            rewind(fp);
             return num; //返回字段个数
         }
     }
+    rewind(fp);
     return -1;
+}
+
+void DropTable(char *name)
+{
+    //printf("drop table %s\n", name);
+    if (fp == NULL || dopens == 0) //当前未打开数据库
+    {
+        printf("No database is open!\nPlease open database first!\n");
+        return;
+    }
+    rewind(fp);
+    int find = 0; //0表示未找到，1表示找到
+    while (!feof(fp))
+    {
+        char tempc;
+        char tempName[20];
+        int num;
+        TableMode FieldSet[MAX_SIZE];
+        fread(&tempc, sizeof(char), 1, fp);
+        if (tempc != '~') //格式不对
+        {
+            printf("%s format not correct!\n", dbf);
+            rewind(fp);
+            return;
+        }
+        fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //读取表名
+        fread(&num, sizeof(int), 1, fp);                     //读取字段数
+        fread(FieldSet, sizeof(TableMode), num, fp);         //读取结构
+        if (strcmp(tempName, name) == 0)                     //找到了表
+        {
+            find = 1;
+            rewind(fp);
+            break;
+        }
+    }
+    if (find == 0)
+        printf("No such table in database %s\n", dbf);
+    else
+    {
+        FILE *np;
+        if ((np = fopen("temp.dbf", "ab+")) == NULL)
+        {
+            printf("Open or create file error!\n");
+        }
+        else
+        {
+            while (!feof(fp))
+            {
+                char tempc, tempName[20];
+                int temp;
+                TableMode tempField[MAX_SIZE];
+                fread(&tempc, sizeof(char), 1, fp); //读取~
+                if (tempc != '~')
+                    break;
+                fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //读取表名
+                fread(&temp, sizeof(int), 1, fp);                    //读取字段数
+                fread(tempField, sizeof(TableMode), temp, fp);       //读取结构
+                if (strcmp(tempName, name) == 0)                     //如果是被删除表则跳过
+                    continue;
+                else
+                {
+                    fwrite(&tempc, sizeof(char), 1, np);                  //写入~
+                    fwrite(tempName, sizeof(char), FILE_NAME_LENGTH, np); //写入表名
+                    fwrite(&temp, sizeof(int), 1, np);                    //写入字段数
+                    fwrite(tempField, sizeof(TableMode), temp, np);       //写入结构
+                }
+            }
+            fclose(fp);
+            fclose(np);
+            remove(dbf);
+            rename("temp.dbf", dbf);
+            if ((fp = fopen(dbf, "rb+")) == NULL)
+            {
+                printf("Open file error!\n");
+                dopens = 0;
+                strcpy(dbf, "");
+            }
+            else
+                printf("Drop table %s successfully!\n", name);
+        }
+    }
+    rewind(fp);
 }
 
 void ViewTable(char *name)
@@ -269,7 +361,7 @@ void ViewTable(char *name)
         printf("No field in table!\n");
     else
     {
-        printf("FieldName      Type    Size Key  Null\n");
+        printf("FieldName      Type    Size Key  Null\n"); //输出信息
         for (int i = 0; i < num; i++)
             printf("%-15s%-8s%-5d%c    %c\n", FieldSet[i].sFieldName, FieldSet[i].sType,
                    FieldSet[i].iSize, FieldSet[i].bKey, FieldSet[i].bNullFlag);
