@@ -42,8 +42,8 @@ int main()
     printf("查看数据库: view database 数据库名\n");
     printf("添加新表  : create table 表名\n");
     printf("            (\n");
-    printf("            字段名 数据类型 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
-    printf("            字段名 数据类型 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
+    printf("            字段名 数据类型(char/int/float) 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
+    printf("            字段名 数据类型(char/int/float) 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
     printf("            …          …\n");
     printf("            )\n");
     printf("查看表结构: view table 表名\n");
