@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 
-FILE *fp; //指向数据库的指针
-char dbf[20]; //dbf文件名
-FILE *dp; //定义指向表的指针，用来完成对表的操作
-char dat[20]; //dat文件名
+FILE *fp;       //指向数据库的指针
+char dbf[20];   //dbf文件名
+FILE *dp;       //定义指向表的指针，用来完成对表的操作
+char dat[20];   //dat文件名
 int dopens = 0; //值为1标志数据库是否已经打开，如果未打开，不允许对表进行增删改
 int topens = 0; //值为1标志表已经打开，如果未打开，不允许对表进行增删改
 
@@ -15,12 +15,12 @@ int topens = 0; //值为1标志表已经打开，如果未打开，不允许对表进行增删改
 typedef struct
 {
     char sFieldName[FIELD_NAME_LENGTH]; //字段名
-    char sType[8]; //字段类型
-    int iSize; //字段字长
-    char bKey; //字段是否是KEY键
-    char bNullFlag; //字段是否允许为空
-    char bValidFlag; //字段是否有效
-} TableMode, *PTableMode; //字段结构
+    char sType[8];                      //字段类型
+    int iSize;                          //字段字长
+    char bKey;                          //字段是否是KEY键
+    char bNullFlag;                     //字段是否允许为空
+    char bValidFlag;                    //字段是否有效
+} TableMode, *PTableMode;               //字段结构
 
 #include "select.cpp"
 #include "dml.c"
@@ -190,7 +190,7 @@ int main()
             else
                 printf("命令语句有误!\n");
         }
-        else if (strcmp(cmd, "update")==0) //update
+        else if (strcmp(cmd, "update") == 0) //update
         {
             //update 列名 = 新值 from 表名 where 列名 = 值(值可为all, 表全部范围)
             char newColName[20], equal1[5], newValue[20], tableName[20], colName[20], equal2[5], value[20];
@@ -227,7 +227,7 @@ int main()
             else
                 printf("命令语句有误4!\n");
         }
-        else if (strcmp(cmd, "select")==0) //select
+        else if (strcmp(cmd, "select") == 0) //select
         {
             //select 列名(all表示所有列)  from 表名 where 列名 = 值(值可为all,表全部范围)"
             char colName[20], tableName[20], whereColName[20], equal[2], value[20];
@@ -258,7 +258,10 @@ int main()
                 printf("命令语句有误!\n");
         }
         else
+        {
             printf("输入命令错误,请检查!\n");
+            fflush(stdin);
+        }
         printf("\n");
     }
     return 0;
