@@ -109,6 +109,7 @@ void CloseDataBase(char *name)
         printf("Close database %s successfully!\n", name);
         strcpy(dbf, "");
         dopens = 0;
+        fclose(fp);
     }
     else //关闭失败
     {
@@ -179,6 +180,8 @@ void ViewDataBase(char *name)
         fseek(p, long(sizeof(TableMode) * num), SEEK_CUR);
         printf("%s\n", tname);
     }
+    if (haveTable == 0)
+        printf("No table in database %s!\n", name);
     fclose(p);
 }
 
@@ -198,7 +201,12 @@ int OpenTable(char *name, PTableMode FieldSet)
     while (!feof(fp))
     {
         char tempc;
-        fread(&tempc, sizeof(char), 1, fp);
+        int i = fread(&tempc, sizeof(char), 1, fp);
+        if (!i)
+        {
+            fseek(fp, 0L, SEEK_SET);
+            break;
+        }
         if (tempc != '~') //格式不对
         {
             printf("%s format not correct!\n", dbf);
@@ -235,7 +243,7 @@ void CreateTable(char *name)
 
     TableMode tempTable[MAX_SIZE];
     if (OpenTable(name, tempTable) == -1) //-1表示没有该表，可以建
-        ;
+        topens = 0;
     else //表已存在，不能建
     {
         printf("Table %s already exist!\n", name);
@@ -336,10 +344,15 @@ void DropTable(char *name)
         char tempName[20];
         int num;
         TableMode FieldSet[MAX_SIZE];
-        fread(&tempc, sizeof(char), 1, fp);
+        int i = fread(&tempc, sizeof(char), 1, fp);
+        if (!i)
+        {
+            fseek(fp, 0L, SEEK_SET);
+            break;
+        }
         if (tempc != '~') //格式不对
         {
-            printf("%s format not correct!\n", dbf);
+            printf("%s format not correct or %s is NULL!\n", dbf, dbf);
             fseek(fp, 0L, SEEK_SET);
             return;
         }
@@ -395,6 +408,14 @@ void DropTable(char *name)
             remove(dbf);
             rename("temp.dbf", dbf);
 
+            char tName[20];
+            strcpy(tName, name);
+            strcat(tName, ".dat");
+            if (remove(tName) == 0) //删除成功
+                ;
+            else //不成功，输出错误
+                printf("%s\n", strerror(errno));
+
             if ((fp = fopen(dbf, "rb+")) == NULL)
             {
                 printf("Open file error!\n");
@@ -413,6 +434,7 @@ void ViewTable(char *name)
     //printf("view table %s\n", name);
     TableMode FieldSet[MAX_SIZE];
     int num = OpenTable(name, FieldSet);
+    topens = 0;
 
     if (num == -1) //-1表示没找到表
         printf("No such table!\n");

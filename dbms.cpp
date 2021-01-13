@@ -22,9 +22,9 @@ typedef struct
     char bValidFlag;                    //字段是否有效
 } TableMode, *PTableMode;               //字段结构
 
-#include "select.cpp"
-#include "dml.c"
 #include "ddl.c"
+#include "dml.c"
+#include "select.cpp"
 
 void transfer(char *cmd)
 {
