@@ -1,26 +1,26 @@
 #include <stdio.h>
 #include <string.h>
 
-FILE *fp;       //Ö¸ÏòÊı¾İ¿âµÄÖ¸Õë
-char dbf[20];   //dbfÎÄ¼şÃû
-FILE *dp;       //¶¨ÒåÖ¸Ïò±íµÄÖ¸Õë£¬ÓÃÀ´Íê³É¶Ô±íµÄ²Ù×÷
-char dat[20];   //datÎÄ¼şÃû
-int dopens = 0; //ÖµÎª1±êÖ¾Êı¾İ¿âÊÇ·ñÒÑ¾­´ò¿ª£¬Èç¹ûÎ´´ò¿ª£¬²»ÔÊĞí¶Ô±í½øĞĞÔöÉ¾¸Ä
-int topens = 0; //ÖµÎª1±êÖ¾±íÒÑ¾­´ò¿ª£¬Èç¹ûÎ´´ò¿ª£¬²»ÔÊĞí¶Ô±í½øĞĞÔöÉ¾¸Ä
+FILE *fp;       //æŒ‡å‘æ•°æ®åº“çš„æŒ‡é’ˆ
+char dbf[20];   //dbfæ–‡ä»¶å
+FILE *dp;       //å®šä¹‰æŒ‡å‘è¡¨çš„æŒ‡é’ˆï¼Œç”¨æ¥å®Œæˆå¯¹è¡¨çš„æ“ä½œ
+char dat[20];   //datæ–‡ä»¶å
+int dopens = 0; //å€¼ä¸º1æ ‡å¿—æ•°æ®åº“æ˜¯å¦å·²ç»æ‰“å¼€ï¼Œå¦‚æœæœªæ‰“å¼€ï¼Œä¸å…è®¸å¯¹è¡¨è¿›è¡Œå¢åˆ æ”¹
+int topens = 0; //å€¼ä¸º1æ ‡å¿—è¡¨å·²ç»æ‰“å¼€ï¼Œå¦‚æœæœªæ‰“å¼€ï¼Œä¸å…è®¸å¯¹è¡¨è¿›è¡Œå¢åˆ æ”¹
 
-#define MAX_SIZE 50          //±íÖĞËùº¬×Ö¶Î×î´ó³¤¶È
-#define FILE_NAME_LENGTH 15  //ÎÄ¼şÃû×î´ó³¤¶È
-#define FIELD_NAME_LENGTH 15 //×Ö¶ÎÃû×î´ó³¤¶È
+#define MAX_SIZE 50          //è¡¨ä¸­æ‰€å«å­—æ®µæœ€å¤§é•¿åº¦
+#define FILE_NAME_LENGTH 15  //æ–‡ä»¶åæœ€å¤§é•¿åº¦
+#define FIELD_NAME_LENGTH 15 //å­—æ®µåæœ€å¤§é•¿åº¦
 
 typedef struct
 {
-    char sFieldName[FIELD_NAME_LENGTH]; //×Ö¶ÎÃû
-    char sType[8];                      //×Ö¶ÎÀàĞÍ
-    int iSize;                          //×Ö¶Î×Ö³¤
-    char bKey;                          //×Ö¶ÎÊÇ·ñÊÇKEY¼ü
-    char bNullFlag;                     //×Ö¶ÎÊÇ·ñÔÊĞíÎª¿Õ
-    char bValidFlag;                    //×Ö¶ÎÊÇ·ñÓĞĞ§
-} TableMode, *PTableMode;               //×Ö¶Î½á¹¹
+    char sFieldName[FIELD_NAME_LENGTH]; //å­—æ®µå
+    char sType[8];                      //å­—æ®µç±»å‹
+    int iSize;                          //å­—æ®µå­—é•¿
+    char bKey;                          //å­—æ®µæ˜¯å¦æ˜¯KEYé”®
+    char bNullFlag;                     //å­—æ®µæ˜¯å¦å…è®¸ä¸ºç©º
+    char bValidFlag;                    //å­—æ®µæ˜¯å¦æœ‰æ•ˆ
+} TableMode, *PTableMode;               //å­—æ®µç»“æ„
 
 #include "ddl.c"
 #include "dml.c"
@@ -34,28 +34,28 @@ void transfer(char *cmd)
 
 int main()
 {
-    printf("Çë°´ÒÔÏÂ¹æÔòÊäÈëÃüÁîÓï¾ä(ÃüÁî²»·Ö´óĞ¡Ğ´)\n");
-    printf("ĞÂ½¨Êı¾İ¿â: create database Êı¾İ¿âÃû\n");
-    printf("É¾³ıÊı¾İ¿â: drop database Êı¾İ¿âÃû\n");
-    printf("´ò¿ªÊı¾İ¿â: open database Êı¾İ¿âÃû\n");
-    printf("¹Ø±ÕÊı¾İ¿â: close database Êı¾İ¿âÃû\n");
-    printf("²é¿´Êı¾İ¿â: view database Êı¾İ¿âÃû\n");
-    printf("¸üÃûÊı¾İ¿â: rename database ¾ÉÊı¾İ¿âÃû ĞÂÊı¾İ¿âÃû\n");
-    printf("Ìí¼ÓĞÂ±í  : create table ±íÃû\n");
+    printf("è¯·æŒ‰ä»¥ä¸‹è§„åˆ™è¾“å…¥å‘½ä»¤è¯­å¥(å‘½ä»¤ä¸åˆ†å¤§å°å†™)\n");
+    printf("æ–°å»ºæ•°æ®åº“: create database æ•°æ®åº“å\n");
+    printf("åˆ é™¤æ•°æ®åº“: drop database æ•°æ®åº“å\n");
+    printf("æ‰“å¼€æ•°æ®åº“: open database æ•°æ®åº“å\n");
+    printf("å…³é—­æ•°æ®åº“: close database æ•°æ®åº“å\n");
+    printf("æŸ¥çœ‹æ•°æ®åº“: view database æ•°æ®åº“å\n");
+    printf("æ›´åæ•°æ®åº“: rename database æ—§æ•°æ®åº“å æ–°æ•°æ®åº“å\n");
+    printf("æ·»åŠ æ–°è¡¨  : create table è¡¨å\n");
     printf("            (\n");
-    printf("            ×Ö¶ÎÃû Êı¾İÀàĞÍ(char/int/float) ×Ö³¤ ÊÇ·ñÎªKEY¼ü(y/n) ÊÇ·ñ¿É¿Õ(y/n),\n");
-    printf("            ×Ö¶ÎÃû Êı¾İÀàĞÍ(char/int/float) ×Ö³¤ ÊÇ·ñÎªKEY¼ü(y/n) ÊÇ·ñ¿É¿Õ(y/n),\n");
-    printf("            ¡­          ¡­\n");
+    printf("            å­—æ®µå æ•°æ®ç±»å‹(char/int/double) å­—é•¿ æ˜¯å¦ä¸ºKEYé”®(y/n) æ˜¯å¦å¯ç©º(y/n),\n");
+    printf("            å­—æ®µå æ•°æ®ç±»å‹(char/int/double) å­—é•¿ æ˜¯å¦ä¸ºKEYé”®(y/n) æ˜¯å¦å¯ç©º(y/n),\n");
+    printf("            â€¦          â€¦\n");
     printf("            )\n");
-    printf("²é¿´±í½á¹¹: view table ±íÃû\n");
-    printf("É¾³ı¾É±í  : drop table ±íÃû\n");
-    printf("¸üÃû±í    : rename table ¾É±íÃû ĞÂ±íÃû\n");
-    printf("¸üÃû×Ö¶Î  : rename field ¾É×Ö¶ÎÃû ĞÂ×Ö¶ÎÃû in ±íÃû\n");
-    printf("²éÑ¯      : select ÁĞÃû(all±íÊ¾ËùÓĞÁĞ) from ±íÃû where ÁĞÃû = Öµ(Öµ¿ÉÎªall,±íÈ«²¿·¶Î§)\n");
-    printf("²åÈë      : insert into ±íÃû(field1,field2,¡­) values(value1,value2,¡­)\n");
-    printf("ĞŞ¸Ä      : update ÁĞÃû = ĞÂÖµ from ±íÃû where ÁĞÃû = Öµ(Öµ¿ÉÎªall,±íÈ«²¿·¶Î§)\n");
-    printf("É¾³ı      : delete from ±íÃû where ÁĞÃû = Öµ(Öµ¿ÉÎªall,±íÈ«²¿·¶Î§)\n");
-    printf("ÍË³ö³ÌĞò  : exit\n");
+    printf("æŸ¥çœ‹è¡¨ç»“æ„: view table è¡¨å\n");
+    printf("åˆ é™¤æ—§è¡¨  : drop table è¡¨å\n");
+    printf("æ›´åè¡¨    : rename table æ—§è¡¨å æ–°è¡¨å\n");
+    printf("æ›´åå­—æ®µ  : rename field æ—§å­—æ®µå æ–°å­—æ®µå in è¡¨å\n");
+    printf("æŸ¥è¯¢      : select åˆ—å(allè¡¨ç¤ºæ‰€æœ‰åˆ—) from è¡¨å where åˆ—å = å€¼(å€¼å¯ä¸ºall,è¡¨å…¨éƒ¨èŒƒå›´)\n");
+    printf("æ’å…¥      : insert into è¡¨å(field1,field2,â€¦) values(value1,value2,â€¦)\n");
+    printf("ä¿®æ”¹      : update åˆ—å = æ–°å€¼ from è¡¨å where åˆ—å = å€¼(å€¼å¯ä¸ºall,è¡¨å…¨éƒ¨èŒƒå›´)\n");
+    printf("åˆ é™¤      : delete from è¡¨å where åˆ—å = å€¼(å€¼å¯ä¸ºall,è¡¨å…¨éƒ¨èŒƒå›´)\n");
+    printf("é€€å‡ºç¨‹åº  : exit\n");
     char cmd[10];
     while (~scanf("%s", cmd))
     {
@@ -64,8 +64,8 @@ int main()
             break;
         if (strcmp(cmd, "create") == 0) //create
         {
-            //create database Êı¾İ¿âÃû
-            //create table ±íÃû
+            //create database æ•°æ®åº“å
+            //create table è¡¨å
             char name[20];
             scanf("%s", cmd);
             transfer(cmd);
@@ -81,14 +81,14 @@ int main()
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "drop") == 0) //drop
         {
-            //drop database Êı¾İ¿âÃû
-            //drop table ±íÃû
+            //drop database æ•°æ®åº“å
+            //drop table è¡¨å
             char name[20];
             scanf("%s", cmd);
             transfer(cmd);
@@ -104,14 +104,14 @@ int main()
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "view") == 0) //view
         {
-            //view database Êı¾İ¿âÃû
-            //view table ±íÃû
+            //view database æ•°æ®åº“å
+            //view table è¡¨å
             char name[20];
             scanf("%s", cmd);
             transfer(cmd);
@@ -127,13 +127,13 @@ int main()
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "close") == 0) //close
         {
-            //close database Êı¾İ¿âÃû
+            //close database æ•°æ®åº“å
             char name[20];
             scanf("%s", cmd);
             transfer(cmd);
@@ -144,13 +144,13 @@ int main()
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "open") == 0) //open
         {
-            //open database Êı¾İ¿âÃû
+            //open database æ•°æ®åº“å
             char name[20];
             scanf("%s", cmd);
             transfer(cmd);
@@ -161,15 +161,15 @@ int main()
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "rename") == 0)
         {
-            //rename database ¾ÉÊı¾İ¿âÃû ĞÂÊı¾İ¿âÃû
-            //rename table ¾É±íÃû ĞÂ±íÃû
-            //rename field ¾É×Ö¶ÎÃû ĞÂ×Ö¶ÎÃû in ±íÃû
+            //rename database æ—§æ•°æ®åº“å æ–°æ•°æ®åº“å
+            //rename table æ—§è¡¨å æ–°è¡¨å
+            //rename field æ—§å­—æ®µå æ–°å­—æ®µå in è¡¨å
             char oldName[20], newName[20], tableName[20];
             scanf("%s", cmd);
             transfer(cmd);
@@ -195,19 +195,19 @@ int main()
                 }
                 else
                 {
-                    printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                    printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                     fflush(stdin);
                 }
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "insert") == 0) //insert
         {
-            //insert into ±íÃû(field1,field2,¡­) values(value1,value2,¡­)"
+            //insert into è¡¨å(field1,field2,â€¦) values(value1,value2,â€¦)"
             char value[100], name[100];
             scanf("%s", cmd);
             transfer(cmd);
@@ -218,13 +218,13 @@ int main()
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "delete") == 0) //delete
         {
-            //delete from ±íÃû where ÁĞÃû = Öµ(Öµ¿ÉÎªall, ±íÈ«²¿·¶Î§)
+            //delete from è¡¨å where åˆ—å = å€¼(å€¼å¯ä¸ºall, è¡¨å…¨éƒ¨èŒƒå›´)
             char tableName[20], colName[20], equal[2], value[100];
             scanf("%s", cmd);
             transfer(cmd);
@@ -244,25 +244,25 @@ int main()
                     }
                     else
                     {
-                        printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                        printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                         fflush(stdin);
                     }
                 }
                 else
                 {
-                    printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                    printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                     fflush(stdin);
                 }
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "update") == 0) //update
         {
-            //update ÁĞÃû = ĞÂÖµ from ±íÃû where ÁĞÃû = Öµ(Öµ¿ÉÎªall, ±íÈ«²¿·¶Î§)
+            //update åˆ—å = æ–°å€¼ from è¡¨å where åˆ—å = å€¼(å€¼å¯ä¸ºall, è¡¨å…¨éƒ¨èŒƒå›´)
             char newColName[20], equal1[5], newValue[20], tableName[20], colName[20], equal2[5], value[20];
             scanf("%s", newColName);
             scanf("%s", equal1);
@@ -287,31 +287,31 @@ int main()
                         }
                         else
                         {
-                            printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                            printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                             fflush(stdin);
                         }
                     }
                     else
                     {
-                        printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                        printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                         fflush(stdin);
                     }
                 }
                 else
                 {
-                    printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                    printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                     fflush(stdin);
                 }
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else if (strcmp(cmd, "select") == 0) //select
         {
-            //select ÁĞÃû(all±íÊ¾ËùÓĞÁĞ)  from ±íÃû where ÁĞÃû = Öµ(Öµ¿ÉÎªall,±íÈ«²¿·¶Î§)"
+            //select åˆ—å(allè¡¨ç¤ºæ‰€æœ‰åˆ—)  from è¡¨å where åˆ—å = å€¼(å€¼å¯ä¸ºall,è¡¨å…¨éƒ¨èŒƒå›´)"
             char colName[20], tableName[20], whereColName[20], equal[2], value[20];
             scanf("%s", colName);
             scanf("%s", cmd);
@@ -332,25 +332,25 @@ int main()
                     }
                     else
                     {
-                        printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                        printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                         fflush(stdin);
                     }
                 }
                 else
                 {
-                    printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                    printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                     fflush(stdin);
                 }
             }
             else
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
             }
         }
         else
         {
-            printf("ÊäÈëÃüÁî´íÎó,Çë¼ì²é!\n");
+            printf("è¾“å…¥å‘½ä»¤é”™è¯¯,è¯·æ£€æŸ¥!\n");
             fflush(stdin);
         }
         printf("\n");
