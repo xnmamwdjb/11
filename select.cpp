@@ -1,9 +1,6 @@
 #include<stdio.h>
 #include<string.h>
 
-#include "dml.c"
-#include "ddl.c"
-
 void Select(char* colName, char* tableName, char* whereColName, char* value)
 {
   int num= 0;
