@@ -1,45 +1,48 @@
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
+#include<math.h>
+//#include<sstream>
 
 extern int OpenTable(char *name, PTableMode FieldSet);
 
-//åˆ†å‰²å­—ç¬¦ä¸²å‡½æ•°ï¼Œç”¨æ¥å®ç°å¯¹æŒ‡å®šå­—ç¬¦çš„åˆ†å‰²
+//·Ö¸î×Ö·û´®º¯Êı£¬ÓÃÀ´ÊµÏÖ¶ÔÖ¸¶¨×Ö·ûµÄ·Ö¸î
 void split(char *src,const char *separator,char **dest,int *numstr) {
 	/*
-		src æºå­—ç¬¦ä¸²çš„é¦–åœ°å€(bufçš„åœ°å€) 
-		separator æŒ‡å®šçš„åˆ†å‰²å­—ç¬¦
-		dest æ¥æ”¶å­å­—ç¬¦ä¸²çš„æ•°ç»„
-		numstr åˆ†å‰²åå­å­—ç¬¦ä¸²çš„ä¸ªæ•°
+		src Ô´×Ö·û´®µÄÊ×µØÖ·(bufµÄµØÖ·) 
+		separator Ö¸¶¨µÄ·Ö¸î×Ö·û
+		dest ½ÓÊÕ×Ó×Ö·û´®µÄÊı×é
+		numstr ·Ö¸îºó×Ó×Ö·û´®µÄ¸öÊı
 	*/
      char *pNext;
      int count = 0;
-     if (src == NULL || strlen(src) == 0) //å¦‚æœä¼ å…¥çš„åœ°å€ä¸ºç©ºæˆ–é•¿åº¦ä¸º0ï¼Œç›´æ¥ç»ˆæ­¢ 
+     if (src == NULL || strlen(src) == 0) //Èç¹û´«ÈëµÄµØÖ·Îª¿Õ»ò³¤¶ÈÎª0£¬Ö±½ÓÖÕÖ¹ 
         return;
-     if (separator == NULL || strlen(separator) == 0) //å¦‚æœªæŒ‡å®šåˆ†å‰²çš„å­—ç¬¦ä¸²ï¼Œç›´æ¥ç»ˆæ­¢ 
+     if (separator == NULL || strlen(separator) == 0) //ÈçÎ´Ö¸¶¨·Ö¸îµÄ×Ö·û´®£¬Ö±½ÓÖÕÖ¹ 
         return;
-     pNext = (char *)strtok(src,separator); //å¿…é¡»ä½¿ç”¨(char *)è¿›è¡Œå¼ºåˆ¶ç±»å‹è½¬æ¢(è™½ç„¶ä¸å†™æœ‰çš„ç¼–è¯‘å™¨ä¸­ä¸ä¼šå‡ºç°æŒ‡é’ˆé”™è¯¯)
+     pNext = (char *)strtok(src,separator); //±ØĞëÊ¹ÓÃ(char *)½øĞĞÇ¿ÖÆÀàĞÍ×ª»»(ËäÈ»²»Ğ´ÓĞµÄ±àÒëÆ÷ÖĞ²»»á³öÏÖÖ¸Õë´íÎó)
      while(pNext != NULL) {
           *dest++ = pNext;
           ++count;
-         pNext = (char *)strtok(NULL,separator);  //å¿…é¡»ä½¿ç”¨(char *)è¿›è¡Œå¼ºåˆ¶ç±»å‹è½¬æ¢
+         pNext = (char *)strtok(NULL,separator);  //±ØĞëÊ¹ÓÃ(char *)½øĞĞÇ¿ÖÆÀàĞÍ×ª»»
     }  
     *numstr = count;
 } 	
 
 void split1(char *src,const char *separator,char dest[50][15],int *numstr) {
 	/*
-		src æºå­—ç¬¦ä¸²çš„é¦–åœ°å€(bufçš„åœ°å€) 
-		separator æŒ‡å®šçš„åˆ†å‰²å­—ç¬¦
-		dest æ¥æ”¶å­å­—ç¬¦ä¸²çš„æ•°ç»„
-		numstr åˆ†å‰²åå­å­—ç¬¦ä¸²çš„ä¸ªæ•°
+		src Ô´×Ö·û´®µÄÊ×µØÖ·(bufµÄµØÖ·) 
+		separator Ö¸¶¨µÄ·Ö¸î×Ö·û
+		dest ½ÓÊÕ×Ó×Ö·û´®µÄÊı×é
+		numstr ·Ö¸îºó×Ó×Ö·û´®µÄ¸öÊı
 	*/
      char *pNext;
      int count = 0;
-     if (src == NULL || strlen(src) == 0) //å¦‚æœä¼ å…¥çš„åœ°å€ä¸ºç©ºæˆ–é•¿åº¦ä¸º0ï¼Œç›´æ¥ç»ˆæ­¢ 
+     if (src == NULL || strlen(src) == 0) //Èç¹û´«ÈëµÄµØÖ·Îª¿Õ»ò³¤¶ÈÎª0£¬Ö±½ÓÖÕÖ¹ 
         return;
-     if (separator == NULL || strlen(separator) == 0) //å¦‚æœªæŒ‡å®šåˆ†å‰²çš„å­—ç¬¦ä¸²ï¼Œç›´æ¥ç»ˆæ­¢ 
+     if (separator == NULL || strlen(separator) == 0) //ÈçÎ´Ö¸¶¨·Ö¸îµÄ×Ö·û´®£¬Ö±½ÓÖÕÖ¹ 
         return;
-     pNext = (char *)strtok(src,separator); //å¿…é¡»ä½¿ç”¨(char *)è¿›è¡Œå¼ºåˆ¶ç±»å‹è½¬æ¢(è™½ç„¶ä¸å†™æœ‰çš„ç¼–è¯‘å™¨ä¸­ä¸ä¼šå‡ºç°æŒ‡é’ˆé”™è¯¯)
+     pNext = (char *)strtok(src,separator); //±ØĞëÊ¹ÓÃ(char *)½øĞĞÇ¿ÖÆÀàĞÍ×ª»»(ËäÈ»²»Ğ´ÓĞµÄ±àÒëÆ÷ÖĞ²»»á³öÏÖÖ¸Õë´íÎó)
      int i = 0;
      while(pNext != NULL) {
         for(int j = 0;j<strlen(pNext);j++){
@@ -47,219 +50,360 @@ void split1(char *src,const char *separator,char dest[50][15],int *numstr) {
         }
         dest[i][strlen(pNext)]='\0';
           ++count;
-         pNext = (char *)strtok(NULL,separator);  //å¿…é¡»ä½¿ç”¨(char *)è¿›è¡Œå¼ºåˆ¶ç±»å‹è½¬æ¢
+         pNext = (char *)strtok(NULL,separator);  //±ØĞëÊ¹ÓÃ(char *)½øĞĞÇ¿ÖÆÀàĞÍ×ª»»
          i++;
     }  
     *numstr = count;
 } 	
 
+
+
 void Insert(char* name,char* value){
-    //nameå­—æ®µåŒ…å«äº†è¡¨åï¼ˆå­—æ®µåï¼‰...
-    //valueå­—æ®µåŒ…å«äº†valuesï¼ˆå­—æ®µå€¼ï¼‰...
-    
-    int numstr = 0;
-    char tname[MAX_SIZE]={0};//ç”¨æ¥å­˜æ”¾åˆ†å‰²ä¹‹åçš„è¡¨å
-    char *tempname[MAX_SIZE]={0};//ç”¨æ¥å­˜æ”¾ä¸­é—´å­—æ®µä»¥è¿›è¡Œå†åˆ†é…
-    char str[100]={0};//ç”¨æ¥å­˜æ”¾å‘½ä»¤å­—æ®µï¼Œä»¥å®ç°å†åˆ†éš”
-    char field[50][15]={};//ç”¨æ¥å­˜æ”¾åˆ†å‰²ä¹‹åçš„å­—æ®µå[FIELD_NAME_LENGTH]
-    char values[50][15]={};//ç”¨æ¥å­˜æ”¾åˆ†å‰²ä¹‹åçš„å­—æ®µå€¼
-    //å°†nameå­—æ®µçš„å€¼èµ‹å€¼ç»™str
-    for(int i = 0;i<strlen(name);i++){
-        str[i] = name[i];
+    //name×Ö¶Î°üº¬ÁË±íÃû£¨×Ö¶ÎÃû£©...
+    //value×Ö¶Î°üº¬ÁËvalues£¨×Ö¶ÎÖµ£©...
+    /*µÚÒ»²½£¬¼ì²éÊÇ·ñ´ò¿ªÊı¾İ¿âºÍ±í£¬Èç¹ûÎ´´ò¿ª£¬Ôò±¨´í*/
+    if(dopens == 0){
+        printf("Êı¾İ¿âÎ´´ò¿ª£¬ÎŞ·¨Ö´ĞĞ²åÈë²Ù×÷!\n");
     }
+    else if(topens == 0){
+        printf("±íÎ´´ò¿ª£¬ÎŞ·¨Ö´ĞĞ²åÈë²Ù×÷£¡\n");
+    }
+    else//¼ì²âÓĞĞ§£¬¿ÉÒÔ¿ªÊ¼»ñÈ¡Ö¸Áî²¢Â¼ÈëĞÅÏ¢
+    {
+    /*µÚ¶ş²½£¬»ñµÃÃüÁî×Ö¶Î²¢·Ö¸îÃüÁî×Ö¶Î*/
+    int numstr = 0;//ÓÃÀ´µÃµ½ÃüÁî×Ö¶Î·Ö¸îÖ®ºóµÄ×Ü¸öÊı
+    char tname[MAX_SIZE]={0};//ÓÃÀ´´æ·Å·Ö¸îÖ®ºóµÄ±íÃû
+    char *tempname[MAX_SIZE]={0};//ÓÃÀ´´æ·ÅÖĞ¼ä×Ö¶ÎÒÔ½øĞĞÔÙ·ÖÅä
+    char str[100]={0};//ÓÃÀ´´æ·ÅÃüÁî×Ö¶Î£¬ÒÔÊµÏÖÔÙ·Ö¸ô
+    char field[50][15]={};//ÓÃÀ´´æ·Å·Ö¸îÖ®ºóµÄ×Ö¶ÎÃû[FIELD_NAME_LENGTH]
+    char values[50][15]={};//ÓÃÀ´´æ·Å·Ö¸îÖ®ºóµÄ×Ö¶ÎÖµ
+    //½«name×Ö¶ÎµÄÖµ¸³Öµ¸østr
+    strcpy(str,name);
+    //for(int i = 0;i<strlen(name);i++){
+        //str[i] = name[i];
+    //}
     /* for(int i=strlen(name);i<100;i++){
         str[i] = '\0';
     } */
-    //printf("%s\n",str);//æ£€æŸ¥å‘½ä»¤æ˜¯å¦èµ‹å€¼åˆæ ¼
-    //ç¬¬ä¸€è½®åˆ†å‰²ï¼Œåˆ†å‰²å‡ºè¡¨å
+    //printf("%s\n",str);//¼ì²éÃüÁîÊÇ·ñ¸³ÖµºÏ¸ñ
+    //µÚÒ»ÂÖ·Ö¸î£¬·Ö¸î³ö±íÃû
     split(str,"(",tempname,&numstr);
     for(int i = 0; i<strlen(tempname[0]);i++){
         tname[i] = tempname[0][i]; 
     }
-    for(int i = 0; i<strlen(tempname[1]); i++){
+    strcpy(str,tempname[1]);
+    /* for(int i = 0; i<strlen(tempname[1]); i++){
         str[i] = tempname[1][i]; 
-    }
-    str[strlen(tempname[1])] = '\0';
-    //printf("%s\n",str);//ç”¨æ¥æ£€æŸ¥å¾…å®ç°çš„å‘½ä»¤åˆ†å‰²æ˜¯å¦åˆæ ¼
-    //ç¬¬äºŒè½®åˆ†å‰²ï¼Œåˆ†å‰²å‡ºçº¯ç²¹çš„fieldå€¼
+    } */
+    //str[strlen(tempname[1])] = '\0';
+    //printf("%s\n",str);//ÓÃÀ´¼ì²é´ıÊµÏÖµÄÃüÁî·Ö¸îÊÇ·ñºÏ¸ñ
+    //µÚ¶şÂÖ·Ö¸î£¬·Ö¸î³ö´¿´âµÄfieldÖµ
     split(str,")",tempname,&numstr);
-    for(int i = 0; i<strlen(tempname[0]);i++){
+    strcpy(str,tempname[0]);
+    /* for(int i = 0; i<strlen(tempname[0]);i++){
         str[i] = tempname[0][i];
     }
-    str[strlen(tempname[0])] = '\0';
-    //printf("%s\n",str);//ç”¨æ¥æ£€æŸ¥å¾…å®ç°çš„å‘½ä»¤åˆ†å‰²æ˜¯å¦åˆæ ¼
-    //ç¬¬ä¸‰è½®åˆ†å‰²ï¼Œåˆ†å‰²å‡ºå„ä¸ªå­—æ®µçš„å€¼ï¼Œä¿è¯å†™å…¥
+    str[strlen(tempname[0])] = '\0'; */
+    //printf("%s\n",str);//ÓÃÀ´¼ì²é´ıÊµÏÖµÄÃüÁî·Ö¸îÊÇ·ñºÏ¸ñ
+    //µÚÈıÂÖ·Ö¸î£¬·Ö¸î³ö¸÷¸ö×Ö¶ÎµÄÖµ£¬±£Ö¤Ğ´Èë
     split1(str,",",field,&numstr);
-    //ç”¨æ¥æ£€æŸ¥æœ€ç»ˆåˆ†å‰²å­—æ®µåæ˜¯å¦åˆæ ¼
+    //ÓÃÀ´¼ì²é×îÖÕ·Ö¸î×Ö¶ÎÃûÊÇ·ñºÏ¸ñ
     /*
     for(int i = 0 ;i<numstr;i++){
         printf("%s\n",field[i]);
     }
     */
-    //å°†valueså­—æ®µçš„å€¼èµ‹å€¼ç»™str
-    for(int i = 0;i<strlen(value);i++){
+    //½«values×Ö¶ÎµÄÖµ¸³Öµ¸østr
+    /* for(int i = 0;i<strlen(value);i++){
         str[i] = value[i];
-    }
-    
+    } */
+    strcpy(str,value);
     /* for(int i=strlen(name);i<100;i++){
         str[i] = '\0';
     } */
-    //printf("%s\n",str);//æ£€æŸ¥å‘½ä»¤æ˜¯å¦èµ‹å€¼åˆæ ¼
-    //ç¬¬ä¸€è½®åˆ†å‰²ï¼Œåˆ†å‰²å‡ºè¡¨valueså…³é”®è¯
+    //printf("%s\n",str);//¼ì²éÃüÁîÊÇ·ñ¸³ÖµºÏ¸ñ
+    //µÚÒ»ÂÖ·Ö¸î£¬·Ö¸î³ö±ívalues¹Ø¼ü´Ê
     split(str,"(",tempname,&numstr);
-    for(int i = 0; i<strlen(tempname[1]); i++){
+    strcpy(str,tempname[1]);
+    /* for(int i = 0; i<strlen(tempname[1]); i++){
         str[i] = tempname[1][i]; 
-    }
+    } */
     /* for(int i = strlen(tempname[1]);i<100;i++){
         str[i] = '\0';
     } */
-    //printf("%s\n",str);//ç”¨æ¥æ£€æŸ¥å¾…å®ç°çš„å‘½ä»¤åˆ†å‰²æ˜¯å¦åˆæ ¼
-    //ç¬¬äºŒè½®åˆ†å‰²ï¼Œåˆ†å‰²å‡ºçº¯ç²¹çš„valueå€¼
+    //printf("%s\n",str);//ÓÃÀ´¼ì²é´ıÊµÏÖµÄÃüÁî·Ö¸îÊÇ·ñºÏ¸ñ
+    //µÚ¶şÂÖ·Ö¸î£¬·Ö¸î³ö´¿´âµÄvalueÖµ
     split(str,")",tempname,&numstr);
-    for(int i = 0; i<strlen(tempname[0]);i++){
+    /* for(int i = 0; i<strlen(tempname[0]);i++){
         str[i] = tempname[0][i];
     }
-    str[strlen(tempname[0])] = '\0';
-    //printf("%s\n",str);//ç”¨æ¥æ£€æŸ¥å¾…å®ç°çš„å‘½ä»¤åˆ†å‰²æ˜¯å¦åˆæ ¼
-    //ç¬¬ä¸‰è½®åˆ†å‰²ï¼Œåˆ†å‰²å‡ºå„ä¸ªå­—æ®µçš„å€¼ï¼Œä¿è¯å†™å…¥
+    str[strlen(tempname[0])] = '\0'; */
+    strcpy(str,tempname[0]);
+    //printf("%s\n",str);//ÓÃÀ´¼ì²é´ıÊµÏÖµÄÃüÁî·Ö¸îÊÇ·ñºÏ¸ñ
+    //µÚÈıÂÖ·Ö¸î£¬·Ö¸î³ö¸÷¸ö×Ö¶ÎµÄÖµ£¬±£Ö¤Ğ´Èë
     split1(str,",",values,&numstr);
     /* for(int i = 0 ;i<numstr;i++){
         printf("%s\n",values[i]);
     } */
 
-    for(int i = 0;i<numstr;i++){
+    /* for(int i = 0;i<numstr;i++){
         values[i][strlen(values[i])] = '\40';
         for(int j = strlen(values[i])+1;j<FIELD_NAME_LENGTH;j++){
             values[i][j]='\40';
         }
-    }
-    //ç”¨æ¥æ£€æŸ¥æœ€ç»ˆåˆ†å‰²å­—æ®µåæ˜¯å¦åˆæ ¼
+    } */
+    //ÓÃÀ´¼ì²é×îÖÕ·Ö¸î×Ö¶ÎÃûÊÇ·ñºÏ¸ñ
     /*
     for(int i = 0 ;i<numstr;i++){
         printf("%s\n",values[i]);
-        //printf("%p\n",values[i]);//æŒ‡ç¤ºæŒ‡é’ˆåœ°å€ï¼Œå‘ç°æŒ‡é’ˆåœ°å€ä¹‹å·®ä¸º2ï¼Œè¯´æ˜å­˜åœ¨é—®é¢˜
+        //printf("%p\n",values[i]);//Ö¸Ê¾Ö¸ÕëµØÖ·£¬·¢ÏÖÖ¸ÕëµØÖ·Ö®²îÎª2£¬ËµÃ÷´æÔÚÎÊÌâ
     }
     */
     
-   //è·å¾—è¡¨ç»“æ„åˆ—è¡¨å€¼
+   /*»ñµÃ±í½á¹¹ÁĞ±íÖµ*/
     TableMode FieldSet[MAX_SIZE];
-    int num = OpenTable(tname, FieldSet);
+    int num = OpenTable(tname, FieldSet);//¾Ö²¿±äÁ¿£¬ÓÃÀ´µÃµ½±íµÄ×Ö¶Î¸öÊıÖµ
     if (num == -1)
         printf("No such table!\n");
     else if (num == 0)
         printf("No field in table!\n");
     else
     {
-        /*
-        printf("FieldName      Type    Size Key  Null\n");
-        for (int i = 0; i < num; i++)
-            printf("%-15s%-8s%-5d%c    %c\n", FieldSet[i].sFieldName, FieldSet[i].sType,
-                   FieldSet[i].iSize, FieldSet[i].bKey, FieldSet[i].bNullFlag);
-        */
-    }
-    //å¼€å§‹å†™å…¥å¯¹åº”çš„datæ–‡ä»¶
-    //åˆ›å»ºå¯¹åº”çš„è¡¨ï¼Œè¿æ¥å¾—åˆ°è¡¨å
-    strcpy(dat,tname);
-    strcat(dat,".dat");
-    //printf("%s\n",dat);//æ£€æŸ¥è¡¨åæ˜¯å¦è¿æ¥åˆæ ¼
-    dp = fopen(dat, "ab+");
-    fwrite("#",sizeof(char), 1, dp);
-    for( int i = 0; i<numstr ;i++){
-        fwrite(values[i],sizeof(char),FIELD_NAME_LENGTH,dp);
-    }
-    fclose(dp);
-    
-    
+        /*´¦Àí¸Õ²ÅµÄÃüÁîÖµ£¬Ê¹µÄÃüÁî°´ÕÕ±íµÄË³Ğò½øĞĞÔ¤´¦Àí*/
+        char fieldname[MAX_SIZE][FIELD_NAME_LENGTH]={0};//ÓÃÀ´´æ·Å±íÃûÖĞ¶ÁÈ¡µÃµ½µÄ×Ö¶Î×öÁÙÊ±Æ¥Åä£¬Ô­ÒòÔÚÓÚÃüÁîĞ´ÈëµÄÊ±ºò×Ö¶ÎË³Ğò¿ÉÄÜÊÇËæ»úµÄ
+        char forinsertvalue[MAX_SIZE][FIELD_NAME_LENGTH]={0};//ÓÃÀ´°´ÕÕË³Ğò´æ·Å´ı²åÈëµÄÊı¾İ
+        for(int i = 0;i<num;i++){//Ò»¹²ÓĞnum¸ö±íµÄ×Ö¶Î£¬Ã¿Ò»¸ö¶¼ºÍnumstr¸öÃüÁî×Ö¶ÎÆ¥Åä
+            for(int j =0;j<numstr;j++){
+                if(strcmp(field[j],FieldSet[i].sFieldName)==0){
+                //Èç¹ûÁ½¸ö×Ö·û´®ÏàµÈ£¬Ôò°Ñ¶ÔÓ¦µÄÃüÁî´æ·Åµ½¶ÔÓ¦µÄ´ı²åÈëÖµÀï
+                strcpy(forinsertvalue[i],values[j]);
+                }
+            }
+        }
+        /*°´ÕÕ±íÖĞ¸ø³öµÄÊı¾İ¿ªÊ¼µÚÒ»±éµÄ¼ìË÷£¬Èç¹û·É¿ÕµÄµØ·½³öÏÖ¿ÕÖµ£¬ÔòËµÃ÷ÃüÁîÓĞÎÊÌâ£¬Ö±½ÓÍË³öinsertº¯Êı*/
+        for(int i = 0;i<num;i++){
+            if(FieldSet[i].bNullFlag=='n'&&strlen(forinsertvalue[i])==0){
+                printf("¶Ô²»Æğ£¬ÄúÊäÈëµÄÃüÁî²»ºÏ·¨£¨·Ç¿Õ×Ö¶ÎÎª¿Õ£©£¬ÎŞ·¨²åÈë\n");
+                return ;
+            }
+        }//ÒÔÉÏ´¦ÀíÈ«²¿Íê³É£¬µÈ´ı¼ì²éµÄÊı¾İÒ³Íê³ÉÔ¤Éè´¦ÀíÖ®ºó£¬¿ªÊ¼´ò¿ªÎÄ¼ş£¬×ªÂë²åÈëÎÄ¼ş
+        //¿ªÊ¼Ğ´Èë¶ÔÓ¦µÄdatÎÄ¼ş
+        //´´½¨¶ÔÓ¦µÄ±í£¬Á¬½ÓµÃµ½±íÃû
+        strcpy(dat,tname);
+        strcat(dat,".dat");
+        //printf("%s\n",dat);//¼ì²é±íÃûÊÇ·ñÁ¬½ÓºÏ¸ñ
+        dp = fopen(dat, "ab+");
 
+        fwrite("#",sizeof(char), 1, dp);
+        for( int i = 0; i<num ;i++){
+            if(strlen(forinsertvalue[i])==0){
+                fwrite("NULL",sizeof(char),4,dp);   
+            }
+            else if(strlen(forinsertvalue[i])!=0){
+                if (strcmp(FieldSet[i].sType,"int")==0){
+                    int x = atoi(forinsertvalue[i]);
+                    //printf("%d",x);
+                    fwrite(&x,sizeof(int),1,dp);
+                }
+                else if(strcmp(FieldSet[i].sType,"double")==0){
+                    double x =atof(forinsertvalue[i]);
+                    printf("%lf",x);
+                    fwrite(&x,sizeof(double),1,dp);
+                }
+                else{
+                    fwrite(forinsertvalue[i],sizeof(char),FieldSet[i].iSize,dp);
+                }
+                
+            }
+            //printf("%p\n",dp);
+        }
+        fclose(dp);  
+    }
+        
+    }
     //printf("insert into %s %s\n",name,value);
 }
 void Delete(char* tableName,char* colName,char* value){
     /**
-     * ä¸ºäº†å®ç°åˆ é™¤æ“ä½œ
-     * éœ€è¦åšçš„æ˜¯è¯»å–æ–‡ä»¶çš„æ‰€æœ‰ä¿¡æ¯
-     * ç„¶åé€šè¿‡å­—ç¬¦ä¸²æ¯”å¯¹è¿›è¡Œå¤„ç†
-     * ç„¶åé‡æ–°å†™å…¥å¤„ç†åçš„æ‰€æœ‰æ•°æ®
-     * è¿™éœ€è¦åˆ›å»ºä¸€ä¸ªä¸´æ—¶æ–‡ä»¶
-     * è¯»å–åŸæ–‡ä»¶çš„ä¸€è¡Œè®°å½•
-     * åˆ¤å®šæ˜¯å¦éœ€è¦åˆ é™¤
-     * å†™å…¥ä¸´æ—¶æ–‡ä»¶
-     * å…¨éƒ¨è¯»å–å®Œæ¯•å…³é—­åŸæ–‡ä»¶å¹¶åˆ é™¤
-     * å°†ä¸´æ—¶æ–‡ä»¶åæ”¹ä¸ºåŸæ–‡ä»¶å
+     * ÎªÁËÊµÏÖÉ¾³ı²Ù×÷
+     * ĞèÒª×öµÄÊÇ¶ÁÈ¡ÎÄ¼şµÄËùÓĞĞÅÏ¢
+     * È»ºóÍ¨¹ı×Ö·û´®±È¶Ô½øĞĞ´¦Àí
+     * È»ºóÖØĞÂĞ´Èë´¦ÀíºóµÄËùÓĞÊı¾İ
+     * ÕâĞèÒª´´½¨Ò»¸öÁÙÊ±ÎÄ¼ş
+     * ¶ÁÈ¡Ô­ÎÄ¼şµÄÒ»ĞĞ¼ÇÂ¼
+     * ÅĞ¶¨ÊÇ·ñĞèÒªÉ¾³ı
+     * Ğ´ÈëÁÙÊ±ÎÄ¼ş
+     * È«²¿¶ÁÈ¡Íê±Ï¹Ø±ÕÔ­ÎÄ¼ş²¢É¾³ı
+     * ½«ÁÙÊ±ÎÄ¼şÃû¸ÄÎªÔ­ÎÄ¼şÃû
     */
-    FILE *tp;//ç”¨æ¥åˆ›å»ºæŒ‡å‘çš„ä¸´æ—¶æ–‡ä»¶
-    char tname[FIELD_NAME_LENGTH]={0};//ç”¨æ¥å­˜æ”¾è¡¨å
-    char tvalue[FIELD_NAME_LENGTH]={0};//ç”¨æ¥æš‚æ—¶å­˜æ”¾è¯»å–çš„æ•°æ®
-   
-    char tflag[2]={0};//ç”¨æ¥å­˜æ”¾è¯»åˆ°çš„æ ‡å¿—ä½
-    for(int i = 0 ;i<strlen(tableName);i++){
-        tname[i] = tableName[i];
+   if(dopens == 0){
+        printf("Êı¾İ¿âÎ´´ò¿ª£¬ÎŞ·¨Ö´ĞĞÉ¾³ı²Ù×÷!\n");
     }
-    strcat(tname,".dat");
+    else if(topens == 0){
+        printf("±íÎ´´ò¿ª£¬ÎŞ·¨Ö´ĞĞÉ¾³ı²Ù×÷£¡\n");
+    }
+    else//¼ì²âÓĞĞ§£¬¿ÉÒÔ¿ªÊ¼»ñÈ¡Ö¸Áî²¢Â¼ÈëĞÅÏ¢
+    {
+    FILE *tp=NULL;//ÓÃÀ´´´½¨Ö¸ÏòµÄÁÙÊ±ÎÄ¼ş
+    FILE *dpt=NULL;//ÓÃÀ´´´½¨Ö¸ÏòÔ­ÎÄ¼ş´ı¼ì²âÊı¾İµÄÖ¸Õë
+    char tname[FIELD_NAME_LENGTH]={0};//ÓÃÀ´´æ·Å±íÃû
+    char tvalue[FIELD_NAME_LENGTH]={0};//ÓÃÀ´ÔİÊ±´æ·Å¶ÁÈ¡µÄÊı¾İ
+   
+    char tflag;//ÓÃÀ´´æ·Å¶Áµ½µÄ±êÖ¾Î»
+    /* for(int i = 0 ;i<strlen(tableName);i++){
+        tname[i] = tableName[i];
+    } */
+    strcpy(tname,tableName);
+    
     //printf("%s",tname);
-    //æ‰“å¼€å¯¹åº”çš„æ–‡ä»¶
-    dp = fopen(tname,"rb+");
+    
 
     TableMode FieldSet[MAX_SIZE];
 
-    int tnum = OpenTable(tname,FieldSet);
-
+    int num = OpenTable(tname,FieldSet);
+    strcat(tname,".dat");
+    //´ò¿ª¶ÔÓ¦µÄÎÄ¼ş
+    dp = fopen(tname,"rb+");
+    dpt = fopen(tname,"rb+");
+    int databyte = 0;//²»¼ÆËãÁË¿ªÊ¼µÄ±êÖ¾Î»
+    int desbyte = 0;//²»¼ÆËãÁË¿ªÊ¼µÄ±êÖ¾Î»
+    //°´ÕÕÊı¾İÀàĞÍ»ñµÃ×Ü¹²µÄ×Ö½ÚÊı
+    for(int i =0; i<num ; i++){
+        if(strcmp(FieldSet[i].sType,"int")==0){
+            databyte = databyte + sizeof(int);
+        }
+        else if(strcmp(FieldSet[i].sType,"double")==0){
+            databyte =databyte + sizeof(double);
+        }
+        else{
+            databyte = databyte + FieldSet[i].iSize;
+        }  
+        //printf("%d\n",databyte);  
+    }
+    //databyte = databyte +1;
+    
+    //ÓÃÀ´±êÖ¾µÈ´ıĞŞ¸ÄµÄÁĞµÄÎ»ÖÃ
     int flag = 0;
-    for(flag = 0;flag < tnum;flag++){
-        if(strcmp(colName,FieldSet[flag].sFieldName)==0)//å­—ç¬¦ä¸²ç›¸ç­‰
+    for(flag = 0;flag < num;flag++){
+        if(strcmp(colName,FieldSet[flag].sFieldName)==0)//×Ö·û´®ÏàµÈ
         break;
     }
-    
-    //è¯»å–å½“å‰æ–‡ä»¶ä¸­çš„å†…å®¹ï¼Œå¹¶ä¸”å¤„ç†æ–‡ä»¶ç»“æœ
-    while(!feof(dp)){
-
-        tp = fopen("temp.dat","ab+");
-        
-        fread(tflag,sizeof(char),1,dp);
-        //printf("%s",tflag);
-        char pvalue[MAX_SIZE][FIELD_NAME_LENGTH]={0};
-        for(int i = 0;i<tnum;i++){
-            fread(tvalue,sizeof(char),FIELD_NAME_LENGTH,dp);
-            printf("%s",tvalue);
-            strcpy(pvalue[i],tvalue);
-           
+    //»ñÈ¡´ı¼ì²âÊı¾İËùÔÚÎ»ÖÃµÄ×Ö½ÚÊı
+    for(int i =0; i<flag ; i++){
+        if(strcmp(FieldSet[i].sType,"int")==0){
+            desbyte = desbyte + sizeof(int);
         }
+        else if(strcmp(FieldSet[i].sType,"double")==0){
+            desbyte =desbyte + sizeof(double);
+        }
+        else{
+            desbyte = desbyte + FieldSet[i].iSize;
+        }    
+    }
+    
+    //desbyte = desbyte + 1;
+    //printf("%d\n",databyte);
+    //printf("%d\n",desbyte);
+    int it = 0;
+    //printf("%p\n",dpt);
+    //printf("%s\n",value);
+    //¶ÁÈ¡µ±Ç°ÎÄ¼şÖĞµÄÄÚÈİ£¬²¢ÇÒ´¦ÀíÎÄ¼ş½á¹û
+    char ch ;
+    while(!feof(dp)){
+        int ml;
+        ml = fread(&ch,sizeof(char),1,dp);
+        //printf("%c",ch);
+        if(!ml) break;
 
-        if(strcmp(pvalue[flag],value)!=0){
-            fwrite("#",sizeof(char), 1, tp);
-            for(int i = 0;i<tnum;i++){
-                fwrite(pvalue[i],sizeof(char),FIELD_NAME_LENGTH,tp);
+        //printf("%d\n",it);
+        
+        tp = fopen("temp.dat","ab+");
+        fseek(dpt,long(desbyte+1),SEEK_CUR);//Ïà¶ÔÓÚµ±Ç°¶Áµ½´ı¼ì²âÊı¾İ£»
+        //printf("%d\n",xxx);
+        //printf("%p\n",dp);
+        //printf("%p\n",dpt);
+        int seekflag = 0;//0´ú±íÒªĞ´Èëtemp ÎÄ¼ş£¬1²»Ğ´
+        int y = 0;//Ö¸Ê¾´ú¼ì²âµÄÊı¾İ¶ÁÈ¡Ö®ºó×Ö½ÚÊı
+
+        if(strcmp(FieldSet[flag].sType,"int")==0){
+            int x;
+            y = sizeof(int);
+            fread(&x,sizeof(int),1,dpt);
+            //printf("zhe int shuchu\n");
+            if(x==atoi(value)){
+                seekflag = 1;
             }
         }
-        
-        
-
+        else if(strcmp(FieldSet[flag].sType,"double")==0){
+            double x;
+            y = sizeof(double);
+            fread(&x,sizeof(double),1,dpt);
+            printf("%f\n",x);
+            //printf("zhe double shuchu\n");
+            if(fabs(x-atof(value))<1e-6){
+                seekflag = 1;
+            }
+        }
+        else{
+            char x[50]={};
+            //printf("%s\n",x);
+            y = FieldSet[flag].iSize;
+            fread(x,sizeof(char),FieldSet[flag].iSize,dpt);
+            //printf("zhe char shuchu\n");
+            //printf("%s\n",x);
+            if(strcmp(x,value)==0){
+                seekflag = 1;
+            }
+        }
+        if(seekflag == 0){
+            
+            char dataforinsert[2000];
+            //printf("%s",dataforinsert);
+            fwrite(&ch,sizeof(char),1,tp);
+            fread(dataforinsert,sizeof(char),databyte,dp);
+            fwrite(dataforinsert,sizeof(char),databyte,tp);
+        }
+        else{
+            fseek(dp,long(databyte),SEEK_CUR);
+        }
+        //fseek(dp,databyte,SEEK_CUR);
+        fseek(dpt,long(databyte-desbyte-y),SEEK_CUR);
+        printf("%d\n",databyte);
+        printf("%d\n",desbyte);
+        printf("%d\n",y);
+        printf("%d\n",databyte-desbyte-y);
+        printf("\n");
+        it++;
+            
         fclose(tp);
     }
+    fclose(dpt);
     fclose(dp);
     remove(tname);
     rename("temp.dat",tname);
+    }
     //printf("delete from %s where %s = %s\n",tableName,colName,value);
 }
 void update(char* tableName,char* newColName,char* newValue,char* colName,char* value){
     /**
-     * ä¸ºäº†å®ç°ä¿®æ”¹æ“ä½œ
-     * éœ€è¦å»ºç«‹ä¸€ä¸ªä¸´æ—¶æ–‡ä»¶
-     * æ‰“å¼€åŸæ–‡ä»¶å¹¶é€è¡Œè¯»å–æ•°æ®
-     * å¯¹æ»¡è¶³æ¡ä»¶çš„æ•°æ®è¿›è¡Œä¿®æ”¹
-     * å¦‚æœä¸æ»¡è¶³ä¿®æ”¹æ¡ä»¶å°±ç›´æ¥å†™å…¥
-     * å¦‚æœæ»¡è¶³ä¿®æ”¹æ¡ä»¶å°±æŒ‰ç…§æ¡ä»¶ä¿®æ”¹åå†™å…¥
-     * å†™å…¥ä¸´æ—¶æ–‡ä»¶
-     * åŸæ–‡ä»¶è¯»å®Œä¹‹åå…³é—­åŸæ–‡ä»¶å¹¶åˆ é™¤
-     * å°†ä¸´æ—¶æ–‡ä»¶åç§°è¯¥ä¸ºåŸæ–‡ä»¶åç§°
+     * ÎªÁËÊµÏÖĞŞ¸Ä²Ù×÷
+     * ĞèÒª½¨Á¢Ò»¸öÁÙÊ±ÎÄ¼ş
+     * ´ò¿ªÔ­ÎÄ¼ş²¢ÖğĞĞ¶ÁÈ¡Êı¾İ
+     * ¶ÔÂú×ãÌõ¼şµÄÊı¾İ½øĞĞĞŞ¸Ä
+     * Èç¹û²»Âú×ãĞŞ¸ÄÌõ¼ş¾ÍÖ±½ÓĞ´Èë
+     * Èç¹ûÂú×ãĞŞ¸ÄÌõ¼ş¾Í°´ÕÕÌõ¼şĞŞ¸ÄºóĞ´Èë
+     * Ğ´ÈëÁÙÊ±ÎÄ¼ş
+     * Ô­ÎÄ¼ş¶ÁÍêÖ®ºó¹Ø±ÕÔ­ÎÄ¼ş²¢É¾³ı
+     * ½«ÁÙÊ±ÎÄ¼şÃû³Æ¸ÃÎªÔ­ÎÄ¼şÃû³Æ
     */
-    FILE *tp;//ç”¨æ¥åˆ›å»ºæŒ‡å‘çš„ä¸´æ—¶æ–‡ä»¶
-    char tname[MAX_SIZE]={0};//ç”¨æ¥å­˜æ”¾è¡¨å
-    //å¤åˆ¶è¡¨åï¼Œæ·»åŠ è¡¨ååç¼€
+    FILE *tp;//ÓÃÀ´´´½¨Ö¸ÏòµÄÁÙÊ±ÎÄ¼ş
+    char tname[MAX_SIZE]={0};//ÓÃÀ´´æ·Å±íÃû
+    //¸´ÖÆ±íÃû£¬Ìí¼Ó±íÃûºó×º
     for(int i = 0 ;i<strlen(tableName);i++){
         tname[i] = tableName[i];
     }
     strcat(tname,".dat");
-    //æ‰“å¼€æ–‡ä»¶å¹¶å‡†å¤‡å¼€å§‹åˆ¤æ–­å’Œä¿®æ”¹æ“ä½œ
+    //´ò¿ªÎÄ¼ş²¢×¼±¸¿ªÊ¼ÅĞ¶ÏºÍĞŞ¸Ä²Ù×÷
     dp = fopen(tname,"rb+");
     while(!feof(dp)){
         tp = fopen("temp.dat","ab+");
