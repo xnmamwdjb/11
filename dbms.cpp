@@ -40,6 +40,7 @@ int main()
     printf("打开数据库: open database 数据库名\n");
     printf("关闭数据库: close database 数据库名\n");
     printf("查看数据库: view database 数据库名\n");
+    printf("更名数据库: rename database 旧数据库名 新数据库名\n");
     printf("添加新表  : create table 表名\n");
     printf("            (\n");
     printf("            字段名 数据类型(char/int/float) 字长 是否为KEY键(y/n) 是否可空(y/n),\n");
@@ -48,6 +49,8 @@ int main()
     printf("            )\n");
     printf("查看表结构: view table 表名\n");
     printf("删除旧表  : drop table 表名\n");
+    printf("更名表    : rename table 旧表名 新表名\n");
+    printf("更名字段  : rename field 旧字段名 新字段名 in 表名\n");
     printf("查询      : select 列名(all表示所有列) from 表名 where 列名 = 值(值可为all,表全部范围)\n");
     printf("插入      : insert into 表名(field1,field2,…) values(value1,value2,…)\n");
     printf("修改      : update 列名 = 新值 from 表名 where 列名 = 值(值可为all,表全部范围)\n");
@@ -77,7 +80,10 @@ int main()
                 CreateTable(name);
             }
             else
+            {
                 printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else if (strcmp(cmd, "drop") == 0) //drop
         {
@@ -97,7 +103,10 @@ int main()
                 DropTable(name);
             }
             else
+            {
                 printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else if (strcmp(cmd, "view") == 0) //view
         {
@@ -117,7 +126,10 @@ int main()
                 ViewTable(name);
             }
             else
+            {
                 printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else if (strcmp(cmd, "close") == 0) //close
         {
@@ -131,7 +143,10 @@ int main()
                 CloseDataBase(name);
             }
             else
+            {
                 printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else if (strcmp(cmd, "open") == 0) //open
         {
@@ -145,7 +160,50 @@ int main()
                 OpenDataBase(name);
             }
             else
+            {
                 printf("命令语句有误!\n");
+                fflush(stdin);
+            }
+        }
+        else if (strcmp(cmd, "rename") == 0)
+        {
+            //rename database 旧数据库名 新数据库名
+            //rename table 旧表名 新表名
+            //rename field 旧字段名 新字段名 in 表名
+            char oldName[20], newName[20], tableName[20];
+            scanf("%s", cmd);
+            transfer(cmd);
+            if (strcmp(cmd, "database") == 0) //database
+            {
+                scanf("%s%s", oldName, newName);
+                RenameDataBase(oldName, newName);
+            }
+            else if (strcmp(cmd, "table") == 0)
+            {
+                scanf("%s%s", oldName, newName);
+                RenameTable(oldName, newName);
+            }
+            else if (strcmp(cmd, "field") == 0)
+            {
+                scanf("%s%s", oldName, newName);
+                scanf("%s", cmd);
+                transfer(cmd);
+                if (strcmp(cmd, "in") == 0)
+                {
+                    scanf("%s",tableName);
+                    RenameField(oldName,newName,tableName);
+                }
+                else
+                {
+                    printf("命令语句有误!\n");
+                    fflush(stdin);
+                }
+            }
+            else
+            {
+                printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else if (strcmp(cmd, "insert") == 0) //insert
         {
@@ -159,7 +217,10 @@ int main()
                 Insert(name, value);
             }
             else
+            {
                 printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else if (strcmp(cmd, "delete") == 0) //delete
         {
@@ -182,13 +243,22 @@ int main()
                         Delete(tableName, colName, value);
                     }
                     else
+                    {
                         printf("命令语句有误!\n");
+                        fflush(stdin);
+                    }
                 }
                 else
+                {
                     printf("命令语句有误!\n");
+                    fflush(stdin);
+                }
             }
             else
+            {
                 printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else if (strcmp(cmd, "update") == 0) //update
         {
@@ -216,16 +286,28 @@ int main()
                             update(newColName, newValue, tableName, colName, value);
                         }
                         else
-                            printf("命令语句有误1!\n");
+                        {
+                            printf("命令语句有误!\n");
+                            fflush(stdin);
+                        }
                     }
                     else
-                        printf("命令语句有误2!\n");
+                    {
+                        printf("命令语句有误!\n");
+                        fflush(stdin);
+                    }
                 }
                 else
-                    printf("命令语句有误3!\n");
+                {
+                    printf("命令语句有误!\n");
+                    fflush(stdin);
+                }
             }
             else
-                printf("命令语句有误4!\n");
+            {
+                printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else if (strcmp(cmd, "select") == 0) //select
         {
@@ -249,13 +331,22 @@ int main()
                         Select(colName, tableName, whereColName, value);
                     }
                     else
+                    {
                         printf("命令语句有误!\n");
+                        fflush(stdin);
+                    }
                 }
                 else
+                {
                     printf("命令语句有误!\n");
+                    fflush(stdin);
+                }
             }
             else
+            {
                 printf("命令语句有误!\n");
+                fflush(stdin);
+            }
         }
         else
         {
