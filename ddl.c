@@ -49,6 +49,7 @@ void CreateDataBase(char *name)
     else //创建成功
         printf("Create database %s successfully!\n", name);
     fclose(p);
+    p = NULL;
 }
 
 void OpenDataBase(char *name)
@@ -65,7 +66,7 @@ void OpenDataBase(char *name)
         return;
     }
 
-    if (fp != NULL || dopens != 0) //有打开的数据库
+    if (dopens != 0) //有打开的数据库
     {
         printf("Please close the current database!\n");
         return;
@@ -88,7 +89,7 @@ void CloseDataBase(char *name)
 {
     //printf("close database %s\n", name);
 
-    if (fp == NULL || dopens == 0) //当前没有打开的数据库
+    if (dopens == 0) //当前没有打开的数据库
     {
         printf("No database is open!\n");
         printf("Close %s failed!\n", name);
@@ -108,8 +109,8 @@ void CloseDataBase(char *name)
     {
         printf("Close database %s successfully!\n", name);
         strcpy(dbf, "");
+        fp = NULL;
         dopens = 0;
-        fclose(fp);
     }
     else //关闭失败
     {
@@ -138,6 +139,53 @@ void DropDataBase(char *name)
         printf("%s\n", strerror(errno));
 }
 
+void RenameDataBase(char *oldName, char *newName)
+{
+    //printf("rename database %s %s\n", oldName, newName);
+
+    char oldTempdbf[20]; //旧文件名
+    strcpy(oldTempdbf, oldName);
+    strcat(oldTempdbf, ".dbf");
+
+    char newTempdbf[20]; //新文件名
+    strcpy(newTempdbf, newName);
+    strcat(newTempdbf, ".dbf");
+
+    FILE *np = fopen(newTempdbf, "rb");
+    if (np != NULL) //名字为newTempdbf的数据库已存在
+    {
+        printf("%s already exists!\n", newTempdbf);
+        fclose(np);
+        np = NULL;
+        return;
+    }
+
+    if (strcmp(oldTempdbf, dbf) == 0) //需要重命名的是当前数据库
+    {
+        fclose(fp); //关闭
+        fp = NULL;
+
+        rename(oldTempdbf, newTempdbf);
+
+        fp = fopen(newTempdbf, "rb+"); //打开
+        strcpy(dbf, newTempdbf);
+        printf("Rename database %s %s successfully!\n", oldName, newName);
+    }
+    else
+    {
+        FILE *p = fopen(oldTempdbf, "rb");
+        if (p == NULL) //没有该数据库
+            printf("No such database %s\n", oldName);
+        else //有该数据库
+        {
+            fclose(p);
+            p = NULL;
+            rename(oldTempdbf, newTempdbf);
+            printf("rename database %s %s successfully!\n", oldName, newName);
+        }
+    }
+}
+
 void ViewDataBase(char *name)
 {
     //printf("view database %s\n", name);
@@ -148,7 +196,10 @@ void ViewDataBase(char *name)
 
     FILE *p;
     if ((p = fopen(tempdbf, "rb")) == NULL) //打开失败，没有该数据库
+    {
         printf("No such database!\n");
+        return;
+    }
 
     int haveTable = 0;
     while (!feof(p))
@@ -157,13 +208,13 @@ void ViewDataBase(char *name)
         int i = fread(&tempc, sizeof(char), 1, p);
         if (!i) //读取失败，返回
         {
-            fclose(p);
-            return;
+            break;
         }
         if (tempc != '~') //文件格式有问题，返回
         {
             printf("%s format not correct!\n", tempdbf);
             fclose(p);
+            p = NULL;
             return;
         }
 
@@ -183,6 +234,7 @@ void ViewDataBase(char *name)
     if (haveTable == 0)
         printf("No table in database %s!\n", name);
     fclose(p);
+    p = NULL;
 }
 
 int OpenTable(char *name, PTableMode FieldSet)
@@ -190,7 +242,7 @@ int OpenTable(char *name, PTableMode FieldSet)
     //printf("open table %s\n", name);
     //fp = fopen("data.dbf", "rb+");
 
-    if (fp == NULL || dopens == 0) //当前未打开数据库
+    if (dopens == 0) //当前未打开数据库
     {
         printf("No database is open!\nPlease open database first!\n");
         return -1;
@@ -204,7 +256,6 @@ int OpenTable(char *name, PTableMode FieldSet)
         int i = fread(&tempc, sizeof(char), 1, fp);
         if (!i)
         {
-            fseek(fp, 0L, SEEK_SET);
             break;
         }
         if (tempc != '~') //格式不对
@@ -228,6 +279,62 @@ int OpenTable(char *name, PTableMode FieldSet)
     }
     fseek(fp, 0L, SEEK_SET);
     return -1;
+}
+
+void RenameTable(char *oldName, char *newName)
+{
+    //printf("rename table %s %s\n", oldName, newName);
+
+    if (dopens == 0) //没有打开的数据库
+    {
+        printf("Please open database first!\n");
+        return;
+    }
+
+    TableMode temp[MAX_SIZE];
+    if (OpenTable(newName, temp) != -1) //判断新表是否已存在
+    {
+        printf("Table %s already exists!\n", newName);
+        return;
+    }
+
+    while (!feof(fp))
+    {
+        char tempc;
+        int i = fread(&tempc, sizeof(char), 1, fp);
+        if (!i) //读取失败，跳出循环
+        {
+            break;
+        }
+
+        if (tempc != '~') //文件格式有问题，返回
+        {
+            printf("%s format not correct!\n", dbf);
+            fseek(fp, 0L, SEEK_SET);
+            return;
+        }
+
+        int num;
+        char tname[20];
+        fread(tname, sizeof(char), FILE_NAME_LENGTH, fp); //读取表格信息
+        if (strcmp(oldName, tname) == 0)                  //找到了该表就改名
+        {
+            fseek(fp, long((-1) * sizeof(char) * FILE_NAME_LENGTH), SEEK_CUR);
+            fwrite(newName, sizeof(char), FILE_NAME_LENGTH, fp);
+            printf("rename table %s %s successfully!\n", oldName, newName);
+            fseek(fp, 0L, SEEK_SET);
+            return;
+        }
+        fread(&num, sizeof(int), 1, fp);
+        fseek(fp, long(sizeof(TableMode) * num), SEEK_CUR);
+    }
+    printf("No such table in database %s\n", dbf);
+    fseek(fp, 0L, SEEK_SET);
+}
+
+void RenameField(char *oldName, char *newName, char *tableName)
+{
+    printf("rename field %s %s in %s\n", oldName, newName, tableName);
 }
 
 void CreateTable(char *name)
@@ -347,7 +454,6 @@ void DropTable(char *name)
         int i = fread(&tempc, sizeof(char), 1, fp);
         if (!i)
         {
-            fseek(fp, 0L, SEEK_SET);
             break;
         }
         if (tempc != '~') //格式不对
@@ -404,7 +510,9 @@ void DropTable(char *name)
             }
 
             fclose(fp);
+            fp = NULL;
             fclose(np);
+            np = NULL;
             remove(dbf);
             rename("temp.dbf", dbf);
 
@@ -442,9 +550,9 @@ void ViewTable(char *name)
         printf("No field in table!\n");
     else
     {
-        printf("FieldName      Type    Size Key  Null\n"); //输出信息
+        printf("FieldName      Type    Size Key  Null Valid\n"); //输出信息
         for (int i = 0; i < num; i++)
-            printf("%-15s%-8s%-5d%c    %c\n", FieldSet[i].sFieldName, FieldSet[i].sType,
-                   FieldSet[i].iSize, FieldSet[i].bKey, FieldSet[i].bNullFlag);
+            printf("%-15s%-8s%-5d%c    %c    %c\n", FieldSet[i].sFieldName, FieldSet[i].sType,
+                   FieldSet[i].iSize, FieldSet[i].bKey, FieldSet[i].bNullFlag, FieldSet[i].bValidFlag);
     }
 }
