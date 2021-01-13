@@ -297,6 +297,7 @@ void RenameTable(char *oldName, char *newName)
         printf("Table %s already exists!\n", newName);
         return;
     }
+    topens = 0;
 
     while (!feof(fp))
     {
@@ -328,13 +329,76 @@ void RenameTable(char *oldName, char *newName)
         fread(&num, sizeof(int), 1, fp);
         fseek(fp, long(sizeof(TableMode) * num), SEEK_CUR);
     }
-    printf("No such table in database %s\n", dbf);
+    printf("No such table in database %s\n", dbf); //循环结束，说明没找到表
     fseek(fp, 0L, SEEK_SET);
 }
 
 void RenameField(char *oldName, char *newName, char *tableName)
 {
-    printf("rename field %s %s in %s\n", oldName, newName, tableName);
+    //printf("rename field %s %s in %s\n", oldName, newName, tableName);
+
+    TableMode FieldSet[MAX_SIZE];
+    int num = OpenTable(tableName, FieldSet);
+    topens = 0;
+    if (num == -1) //没有该表
+    {
+        printf("No such table!\n");
+        return;
+    }
+
+    TableMode tempField;
+    int position = -1;
+    int i = 0;
+    for (i = 0; i < num; i++) //寻找字段新旧名字是否存在
+    {
+        if (strcmp(FieldSet[i].sFieldName, oldName) == 0) //找到了则将新的名字赋给tempField
+        {
+            position = i;
+            strcpy(FieldSet[i].sFieldName, newName);
+        }
+        else if (strcmp(FieldSet[i].sFieldName, newName) == 0)
+            break;
+    }
+    if (i != num) //执行了break，说明新字段名在fieldset中已存在
+        printf("Field %s already exists!\n", newName);
+    else
+    {
+        if (position == -1) //position没变，说明没找到旧字段
+            printf("No such Field in %s!\n", tableName);
+        else
+        {
+            while (!feof(fp))
+            {
+                char tempc;
+                int i = fread(&tempc, sizeof(char), 1, fp);
+                if (!i) //读取失败，跳出循环
+                {
+                    break;
+                }
+
+                if (tempc != '~') //文件格式有问题，返回
+                {
+                    printf("%s format not correct!\n", dbf);
+                    fseek(fp, 0L, SEEK_SET);
+                    return;
+                }
+
+                int num;
+                char tname[20];
+                fread(tname, sizeof(char), FILE_NAME_LENGTH, fp); //读取表格信息
+                fread(&num, sizeof(int), 1, fp);
+                if (strcmp(tableName, tname) == 0) //找到了该表,指向该表tablemode的第一位
+                {
+                    fseek(fp, long(sizeof(TableMode) * position), SEEK_CUR); //跳过position个字段结构
+                    fwrite(&FieldSet[position], sizeof(TableMode), 1, fp);
+                    printf("rename field %s %s in %s successfully!\n", oldName, newName, tableName);
+                    fseek(fp, 0L, SEEK_SET);
+                    return;
+                }
+                fseek(fp, long(sizeof(TableMode) * num), SEEK_CUR);
+            }
+        }
+    }
 }
 
 void CreateTable(char *name)
@@ -542,7 +606,7 @@ void ViewTable(char *name)
     //printf("view table %s\n", name);
     TableMode FieldSet[MAX_SIZE];
     int num = OpenTable(name, FieldSet);
-    topens = 0;
+    //topens = 0;
 
     if (num == -1) //-1表示没找到表
         printf("No such table!\n");
