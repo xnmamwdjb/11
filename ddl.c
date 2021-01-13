@@ -369,14 +369,14 @@ void CreateTable(char *name)
             scanf("%15s%8s%d", FieldSet[num].sFieldName, FieldSet[num].sType, &(FieldSet[num].iSize)); //读取字段名，字段类型，字段字长
             if (strcmp(FieldSet[num].sType, "char") == 0)                                              //字段类型是char
                 ;
-            else if (strcmp(FieldSet[num].sType, "int") == 0 || strcmp(FieldSet[num].sType, "float") == 0) //字段类型是int或者float
+            else if (strcmp(FieldSet[num].sType, "int") == 0 || strcmp(FieldSet[num].sType, "double") == 0) //字段类型是int或者double
             {
                 if (FieldSet[num].iSize != 1)
                     FieldSet[num].iSize = 1; //字段长度不为1
             }
             else //字段类型不支持
             {
-                printf("Fieldtype must in (\"int\",\"char\",\"float\")!\n");
+                printf("Fieldtype must in (\"int\",\"char\",\"double\")!\n");
                 printf("命令语句有误!\n");
                 fflush(stdin);
                 return;
