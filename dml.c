@@ -338,7 +338,7 @@ void Delete(char* tableName,char* colName,char* value){
             double x;
             y = sizeof(double);
             fread(&x,sizeof(double),1,dpt);
-            printf("%f\n",x);
+            //printf("%f\n",x);
             //printf("zhe double shuchu\n");
             if(fabs(x-atof(value))<1e-6){
                 seekflag = 1;
@@ -368,11 +368,11 @@ void Delete(char* tableName,char* colName,char* value){
         }
         //fseek(dp,databyte,SEEK_CUR);
         fseek(dpt,long(databyte-desbyte-y),SEEK_CUR);
-        printf("%d\n",databyte);
+        /* printf("%d\n",databyte);
         printf("%d\n",desbyte);
         printf("%d\n",y);
         printf("%d\n",databyte-desbyte-y);
-        printf("\n");
+        printf("\n"); */
         it++;
             
         fclose(tp);
