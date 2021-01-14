@@ -2,51 +2,28 @@
 #include <string.h>
 #include <stdlib.h>
 
-// int execmd(char *cmd, char *result)
-// {
-//     strcat(cmd, " 2>1.txt"); //½«´íÎóÄÚÈİÊä³öµ½1.txt
-//     if (system(cmd))
-//         return 0; //·µ»Ø0±íÊ¾ÔËĞĞÊ§°Ü
-//     FILE *p;
-//     if ((p = fopen("1.txt", "r+")) != NULL) //´æÔÚÎÄ¼ş1.txt
-//     {
-//         fgets(result, 128, p); //½«´íÎó´«¸øresult
-//         fclose(p);
-//         system("del 1.txt"); //É¾³ı1.txt
-//         if (strcmp(result, "") == 0)
-//             return 1; //·µ»Ø1±íÊ¾ÔËĞĞ³É¹¦
-//         else
-//             return 0;
-//     }
-//     else
-//     {
-//         fclose(p);
-//         return 1; //²»´æÔÚ1.txt Ä¬ÈÏÖ´ĞĞ³É¹¦
-//     }
-// }
-
 void CreateDataBase(char *name)
 {
     //printf("create database %s\n", name);
 
-    char ndbf[20]; //ĞÂÊı¾İ¿âÎÄ¼şÃû
+    char ndbf[20]; //æ–°æ•°æ®åº“æ–‡ä»¶å
     strcpy(ndbf, name);
     strcat(ndbf, ".dbf");
 
     FILE *p;
-    if ((p = fopen(ndbf, "rb")) != NULL) //¸ÃÊı¾İ¿âÒÑ´æÔÚ
+    if ((p = fopen(ndbf, "rb")) != NULL) //è¯¥æ•°æ®åº“å·²å­˜åœ¨
     {
         printf("Database %s already exists!\n", name);
         printf("Create database %s failed!\n", name);
         //exit(1);
     }
-    else if ((p = fopen(ndbf, "ab+")) == NULL) //Î´³É¹¦´´½¨
+    else if ((p = fopen(ndbf, "ab+")) == NULL) //æœªæˆåŠŸåˆ›å»º
     {
         printf("Create file error!\n");
         printf("Create database %s failed!\n", name);
         //exit(1);
     }
-    else //´´½¨³É¹¦
+    else //åˆ›å»ºæˆåŠŸ
         printf("Create database %s successfully!\n", name);
     fclose(p);
     p = NULL;
@@ -56,28 +33,28 @@ void OpenDataBase(char *name)
 {
     //printf("open database %s\n", name);
 
-    char ndbf[20]; //ĞÂÊı¾İ¿âÎÄ¼şÃû
+    char ndbf[20]; //æ–°æ•°æ®åº“æ–‡ä»¶å
     strcpy(ndbf, name);
     strcat(ndbf, ".dbf");
 
-    if (strcmp(ndbf, dbf) == 0) //¸ÃÊı¾İ¿âÒÑ´ò¿ª
+    if (strcmp(ndbf, dbf) == 0) //è¯¥æ•°æ®åº“å·²æ‰“å¼€
     {
         printf("Database already opens!\n");
         return;
     }
 
-    if (dopens != 0) //ÓĞ´ò¿ªµÄÊı¾İ¿â
+    if (dopens != 0) //æœ‰æ‰“å¼€çš„æ•°æ®åº“
     {
         printf("Please close the current database!\n");
         return;
     }
 
-    if ((fp = fopen(ndbf, "rb+")) == NULL) //Êı¾İ¿â²»´æÔÚ»òÎÄ¼ş´ò¿ªÊ§°Ü
+    if ((fp = fopen(ndbf, "rb+")) == NULL) //æ•°æ®åº“ä¸å­˜åœ¨æˆ–æ–‡ä»¶æ‰“å¼€å¤±è´¥
     {
         printf("No such database!\n");
         //exit(1);
     }
-    else //´ò¿ª³É¹¦
+    else //æ‰“å¼€æˆåŠŸ
     {
         printf("Open database %s successfully!\n", name);
         strcpy(dbf, ndbf);
@@ -89,32 +66,32 @@ void CloseDataBase(char *name)
 {
     //printf("close database %s\n", name);
 
-    if (dopens == 0) //µ±Ç°Ã»ÓĞ´ò¿ªµÄÊı¾İ¿â
+    if (dopens == 0) //å½“å‰æ²¡æœ‰æ‰“å¼€çš„æ•°æ®åº“
     {
         printf("No database is open!\n");
         printf("Close %s failed!\n", name);
         return;
     }
 
-    char ndbf[20]; //ĞèÒª¹Ø±ÕµÄÊı¾İ¿âÎÄ¼şÃû
+    char ndbf[20]; //éœ€è¦å…³é—­çš„æ•°æ®åº“æ–‡ä»¶å
     strcpy(ndbf, name);
     strcat(ndbf, ".dbf");
 
-    if (strcmp(ndbf, dbf) != 0) //ĞèÒª¹Ø±ÕµÄÊı¾İ¿âÃûºÍµ±Ç°´ò¿ªµÄÊı¾İ¿âÃû²»Í¬
+    if (strcmp(ndbf, dbf) != 0) //éœ€è¦å…³é—­çš„æ•°æ®åº“åå’Œå½“å‰æ‰“å¼€çš„æ•°æ®åº“åä¸åŒ
     {
         printf("The current database is not %s!\n", name);
         return;
     }
-    else if (fclose(fp) == 0) //¹Ø±Õ³É¹¦
+    else if (fclose(fp) == 0) //å…³é—­æˆåŠŸ
     {
         printf("Close database %s successfully!\n", name);
         strcpy(dbf, "");
         fp = NULL;
         dopens = 0;
     }
-    else //¹Ø±ÕÊ§°Ü
+    else //å…³é—­å¤±è´¥
     {
-        perror("fclose:"); //perrorÓÃÓÚÊä³öÉÏÒ»¸öº¯ÊıµÄ´íÎóĞÅÏ¢
+        perror("fclose:"); //perrorç”¨äºè¾“å‡ºä¸Šä¸€ä¸ªå‡½æ•°çš„é”™è¯¯ä¿¡æ¯
         printf("Close database %s failed!\n", name);
     }
 }
@@ -127,15 +104,15 @@ void DropDataBase(char *name)
     strcpy(ndbf, name);
     strcat(ndbf, ".dbf");
 
-    if (strcmp(ndbf, dbf) == 0) //Êı¾İ¿âÎ´¹Ø±Õ
+    if (strcmp(ndbf, dbf) == 0) //æ•°æ®åº“æœªå…³é—­
     {
         printf("Please close database %s first!\n", name);
         return;
     }
 
-    if (remove(ndbf) == 0) //É¾³ı³É¹¦
+    if (remove(ndbf) == 0) //åˆ é™¤æˆåŠŸ
         printf("drop database %s successfully!\n", name);
-    else //²»³É¹¦£¬Êä³ö´íÎó
+    else //ä¸æˆåŠŸï¼Œè¾“å‡ºé”™è¯¯
         printf("%s\n", strerror(errno));
 }
 
@@ -143,16 +120,16 @@ void RenameDataBase(char *oldName, char *newName)
 {
     //printf("rename database %s %s\n", oldName, newName);
 
-    char oldTempdbf[20]; //¾ÉÎÄ¼şÃû
+    char oldTempdbf[20]; //æ—§æ–‡ä»¶å
     strcpy(oldTempdbf, oldName);
     strcat(oldTempdbf, ".dbf");
 
-    char newTempdbf[20]; //ĞÂÎÄ¼şÃû
+    char newTempdbf[20]; //æ–°æ–‡ä»¶å
     strcpy(newTempdbf, newName);
     strcat(newTempdbf, ".dbf");
 
     FILE *np = fopen(newTempdbf, "rb");
-    if (np != NULL) //Ãû×ÖÎªnewTempdbfµÄÊı¾İ¿âÒÑ´æÔÚ
+    if (np != NULL) //åå­—ä¸ºnewTempdbfçš„æ•°æ®åº“å·²å­˜åœ¨
     {
         printf("%s already exists!\n", newTempdbf);
         fclose(np);
@@ -160,23 +137,23 @@ void RenameDataBase(char *oldName, char *newName)
         return;
     }
 
-    if (strcmp(oldTempdbf, dbf) == 0) //ĞèÒªÖØÃüÃûµÄÊÇµ±Ç°Êı¾İ¿â
+    if (strcmp(oldTempdbf, dbf) == 0) //éœ€è¦é‡å‘½åçš„æ˜¯å½“å‰æ•°æ®åº“
     {
-        fclose(fp); //¹Ø±Õ
+        fclose(fp); //å…³é—­
         fp = NULL;
 
         rename(oldTempdbf, newTempdbf);
 
-        fp = fopen(newTempdbf, "rb+"); //´ò¿ª
+        fp = fopen(newTempdbf, "rb+"); //æ‰“å¼€
         strcpy(dbf, newTempdbf);
         printf("Rename database %s %s successfully!\n", oldName, newName);
     }
     else
     {
         FILE *p = fopen(oldTempdbf, "rb");
-        if (p == NULL) //Ã»ÓĞ¸ÃÊı¾İ¿â
+        if (p == NULL) //æ²¡æœ‰è¯¥æ•°æ®åº“
             printf("No such database %s\n", oldName);
-        else //ÓĞ¸ÃÊı¾İ¿â
+        else //æœ‰è¯¥æ•°æ®åº“
         {
             fclose(p);
             p = NULL;
@@ -190,12 +167,12 @@ void ViewDataBase(char *name)
 {
     //printf("view database %s\n", name);
 
-    char tempdbf[20]; //ÁÙÊ±dbfÎÄ¼şÃû
+    char tempdbf[20]; //ä¸´æ—¶dbfæ–‡ä»¶å
     strcpy(tempdbf, name);
     strcat(tempdbf, ".dbf");
 
     FILE *p;
-    if ((p = fopen(tempdbf, "rb")) == NULL) //´ò¿ªÊ§°Ü£¬Ã»ÓĞ¸ÃÊı¾İ¿â
+    if ((p = fopen(tempdbf, "rb")) == NULL) //æ‰“å¼€å¤±è´¥ï¼Œæ²¡æœ‰è¯¥æ•°æ®åº“
     {
         printf("No such database!\n");
         return;
@@ -206,11 +183,11 @@ void ViewDataBase(char *name)
     {
         char tempc;
         int i = fread(&tempc, sizeof(char), 1, p);
-        if (!i) //¶ÁÈ¡Ê§°Ü£¬·µ»Ø
+        if (!i) //è¯»å–å¤±è´¥ï¼Œè¿”å›
         {
             break;
         }
-        if (tempc != '~') //ÎÄ¼ş¸ñÊ½ÓĞÎÊÌâ£¬·µ»Ø
+        if (tempc != '~') //æ–‡ä»¶æ ¼å¼æœ‰é—®é¢˜ï¼Œè¿”å›
         {
             printf("%s format not correct!\n", tempdbf);
             fclose(p);
@@ -219,14 +196,14 @@ void ViewDataBase(char *name)
         }
 
         if (!haveTable)
-        { //ÓĞ±íÔòÊä³ö
+        { //æœ‰è¡¨åˆ™è¾“å‡º
             haveTable = 1;
             printf("There are tables in database %s:\n", name);
         }
 
         int num;
         char tname[20];
-        fread(tname, sizeof(char), FILE_NAME_LENGTH, p); //¶ÁÈ¡±í¸ñĞÅÏ¢
+        fread(tname, sizeof(char), FILE_NAME_LENGTH, p); //è¯»å–è¡¨æ ¼ä¿¡æ¯
         fread(&num, sizeof(int), 1, p);
         fseek(p, long(sizeof(TableMode) * num), SEEK_CUR);
         printf("%s\n", tname);
@@ -242,7 +219,7 @@ int OpenTable(char *name, PTableMode FieldSet)
     //printf("open table %s\n", name);
     //fp = fopen("data.dbf", "rb+");
 
-    if (dopens == 0) //µ±Ç°Î´´ò¿ªÊı¾İ¿â
+    if (dopens == 0) //å½“å‰æœªæ‰“å¼€æ•°æ®åº“
     {
         printf("No database is open!\nPlease open database first!\n");
         return -1;
@@ -258,24 +235,26 @@ int OpenTable(char *name, PTableMode FieldSet)
         {
             break;
         }
-        if (tempc != '~') //¸ñÊ½²»¶Ô
+        if (tempc != '~') //æ ¼å¼ä¸å¯¹
         {
             printf("%s format not correct!\n", dbf);
             fseek(fp, 0L, SEEK_SET);
-            return -1; //-1±íÊ¾Ã»ÕÒµ½
+            return -1; //-1è¡¨ç¤ºæ²¡æ‰¾åˆ°
         }
 
         char tempName[20];
         int num = 0;
-        fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //¶ÁÈ¡±íÃû
-        fread(&num, sizeof(int), 1, fp);                     //¶ÁÈ¡×Ö¶ÎÊı
-        fread(FieldSet, sizeof(TableMode), num, fp);         //¶ÁÈ¡½á¹¹
-        if (strcmp(tempName, name) == 0)                     //ÕÒµ½ÁË±í
+        fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //è¯»å–è¡¨å
+        fread(&num, sizeof(int), 1, fp);                     //è¯»å–å­—æ®µæ•°
+        if (strcmp(tempName, name) == 0)                     //æ‰¾åˆ°äº†è¡¨
         {
             topens = 1;
+            fread(FieldSet, sizeof(TableMode), num, fp); //è¯»å–ç»“æ„
             fseek(fp, 0L, SEEK_SET);
-            return num; //·µ»Ø×Ö¶Î¸öÊı
+            return num; //è¿”å›å­—æ®µä¸ªæ•°
         }
+        else
+            fseek(fp, sizeof(TableMode) * num, SEEK_CUR); //ä¸æ˜¯éœ€è¦çš„è¡¨å°±è·³è¿‡
     }
     fseek(fp, 0L, SEEK_SET);
     return -1;
@@ -285,14 +264,14 @@ void RenameTable(char *oldName, char *newName)
 {
     //printf("rename table %s %s\n", oldName, newName);
 
-    if (dopens == 0) //Ã»ÓĞ´ò¿ªµÄÊı¾İ¿â
+    if (dopens == 0) //æ²¡æœ‰æ‰“å¼€çš„æ•°æ®åº“
     {
         printf("Please open database first!\n");
         return;
     }
 
     TableMode temp[MAX_SIZE];
-    if (OpenTable(newName, temp) != -1) //ÅĞ¶ÏĞÂ±íÊÇ·ñÒÑ´æÔÚ
+    if (OpenTable(newName, temp) != -1) //åˆ¤æ–­æ–°è¡¨æ˜¯å¦å·²å­˜åœ¨
     {
         printf("Table %s already exists!\n", newName);
         return;
@@ -303,12 +282,12 @@ void RenameTable(char *oldName, char *newName)
     {
         char tempc;
         int i = fread(&tempc, sizeof(char), 1, fp);
-        if (!i) //¶ÁÈ¡Ê§°Ü£¬Ìø³öÑ­»·
+        if (!i) //è¯»å–å¤±è´¥ï¼Œè·³å‡ºå¾ªç¯
         {
             break;
         }
 
-        if (tempc != '~') //ÎÄ¼ş¸ñÊ½ÓĞÎÊÌâ£¬·µ»Ø
+        if (tempc != '~') //æ–‡ä»¶æ ¼å¼æœ‰é—®é¢˜ï¼Œè¿”å›
         {
             printf("%s format not correct!\n", dbf);
             fseek(fp, 0L, SEEK_SET);
@@ -317,8 +296,8 @@ void RenameTable(char *oldName, char *newName)
 
         int num;
         char tname[20];
-        fread(tname, sizeof(char), FILE_NAME_LENGTH, fp); //¶ÁÈ¡±í¸ñĞÅÏ¢
-        if (strcmp(oldName, tname) == 0)                  //ÕÒµ½ÁË¸Ã±í¾Í¸ÄÃû
+        fread(tname, sizeof(char), FILE_NAME_LENGTH, fp); //è¯»å–è¡¨æ ¼ä¿¡æ¯
+        if (strcmp(oldName, tname) == 0)                  //æ‰¾åˆ°äº†è¯¥è¡¨å°±æ”¹å
         {
             fseek(fp, long((-1) * sizeof(char) * FILE_NAME_LENGTH), SEEK_CUR);
             fwrite(newName, sizeof(char), FILE_NAME_LENGTH, fp);
@@ -329,7 +308,7 @@ void RenameTable(char *oldName, char *newName)
         fread(&num, sizeof(int), 1, fp);
         fseek(fp, long(sizeof(TableMode) * num), SEEK_CUR);
     }
-    printf("No such table in database %s\n", dbf); //Ñ­»·½áÊø£¬ËµÃ÷Ã»ÕÒµ½±í
+    printf("No such table in database %s\n", dbf); //å¾ªç¯ç»“æŸï¼Œè¯´æ˜æ²¡æ‰¾åˆ°è¡¨
     fseek(fp, 0L, SEEK_SET);
 }
 
@@ -340,7 +319,7 @@ void RenameField(char *oldName, char *newName, char *tableName)
     TableMode FieldSet[MAX_SIZE];
     int num = OpenTable(tableName, FieldSet);
     topens = 0;
-    if (num == -1) //Ã»ÓĞ¸Ã±í
+    if (num == -1) //æ²¡æœ‰è¯¥è¡¨
     {
         printf("No such table!\n");
         return;
@@ -349,9 +328,9 @@ void RenameField(char *oldName, char *newName, char *tableName)
     TableMode tempField;
     int position = -1;
     int i = 0;
-    for (i = 0; i < num; i++) //Ñ°ÕÒ×Ö¶ÎĞÂ¾ÉÃû×ÖÊÇ·ñ´æÔÚ
+    for (i = 0; i < num; i++) //å¯»æ‰¾å­—æ®µæ–°æ—§åå­—æ˜¯å¦å­˜åœ¨
     {
-        if (strcmp(FieldSet[i].sFieldName, oldName) == 0) //ÕÒµ½ÁËÔò½«ĞÂµÄÃû×Ö¸³¸øtempField
+        if (strcmp(FieldSet[i].sFieldName, oldName) == 0) //æ‰¾åˆ°äº†åˆ™å°†æ–°çš„åå­—èµ‹ç»™tempField
         {
             position = i;
             strcpy(FieldSet[i].sFieldName, newName);
@@ -359,11 +338,11 @@ void RenameField(char *oldName, char *newName, char *tableName)
         else if (strcmp(FieldSet[i].sFieldName, newName) == 0)
             break;
     }
-    if (i != num) //Ö´ĞĞÁËbreak£¬ËµÃ÷ĞÂ×Ö¶ÎÃûÔÚfieldsetÖĞÒÑ´æÔÚ
+    if (i != num) //æ‰§è¡Œäº†breakï¼Œè¯´æ˜æ–°å­—æ®µååœ¨fieldsetä¸­å·²å­˜åœ¨
         printf("Field %s already exists!\n", newName);
     else
     {
-        if (position == -1) //positionÃ»±ä£¬ËµÃ÷Ã»ÕÒµ½¾É×Ö¶Î
+        if (position == -1) //positionæ²¡å˜ï¼Œè¯´æ˜æ²¡æ‰¾åˆ°æ—§å­—æ®µ
             printf("No such Field in %s!\n", tableName);
         else
         {
@@ -371,12 +350,12 @@ void RenameField(char *oldName, char *newName, char *tableName)
             {
                 char tempc;
                 int i = fread(&tempc, sizeof(char), 1, fp);
-                if (!i) //¶ÁÈ¡Ê§°Ü£¬Ìø³öÑ­»·
+                if (!i) //è¯»å–å¤±è´¥ï¼Œè·³å‡ºå¾ªç¯
                 {
                     break;
                 }
 
-                if (tempc != '~') //ÎÄ¼ş¸ñÊ½ÓĞÎÊÌâ£¬·µ»Ø
+                if (tempc != '~') //æ–‡ä»¶æ ¼å¼æœ‰é—®é¢˜ï¼Œè¿”å›
                 {
                     printf("%s format not correct!\n", dbf);
                     fseek(fp, 0L, SEEK_SET);
@@ -385,11 +364,11 @@ void RenameField(char *oldName, char *newName, char *tableName)
 
                 int num;
                 char tname[20];
-                fread(tname, sizeof(char), FILE_NAME_LENGTH, fp); //¶ÁÈ¡±í¸ñĞÅÏ¢
+                fread(tname, sizeof(char), FILE_NAME_LENGTH, fp); //è¯»å–è¡¨æ ¼ä¿¡æ¯
                 fread(&num, sizeof(int), 1, fp);
-                if (strcmp(tableName, tname) == 0) //ÕÒµ½ÁË¸Ã±í,Ö¸Ïò¸Ã±ítablemodeµÄµÚÒ»Î»
+                if (strcmp(tableName, tname) == 0) //æ‰¾åˆ°äº†è¯¥è¡¨,æŒ‡å‘è¯¥è¡¨tablemodeçš„ç¬¬ä¸€ä½
                 {
-                    fseek(fp, long(sizeof(TableMode) * position), SEEK_CUR); //Ìø¹ıposition¸ö×Ö¶Î½á¹¹
+                    fseek(fp, long(sizeof(TableMode) * position), SEEK_CUR); //è·³è¿‡positionä¸ªå­—æ®µç»“æ„
                     fwrite(&FieldSet[position], sizeof(TableMode), 1, fp);
                     printf("rename field %s %s in %s successfully!\n", oldName, newName, tableName);
                     fseek(fp, 0L, SEEK_SET);
@@ -406,22 +385,22 @@ void CreateTable(char *name)
     //printf("create table %s\n", name);
     //fp = fopen("data.dbf", "ab+");
 
-    if (dopens == 0) //µ±Ç°Î´´ò¿ªÊı¾İ¿â
+    if (dopens == 0) //å½“å‰æœªæ‰“å¼€æ•°æ®åº“
     {
         printf("No database is open!\nPlease open database first!\n");
         return;
     }
 
     TableMode tempTable[MAX_SIZE];
-    if (OpenTable(name, tempTable) == -1) //-1±íÊ¾Ã»ÓĞ¸Ã±í£¬¿ÉÒÔ½¨
+    if (OpenTable(name, tempTable) == -1) //-1è¡¨ç¤ºæ²¡æœ‰è¯¥è¡¨ï¼Œå¯ä»¥å»º
         topens = 0;
-    else //±íÒÑ´æÔÚ£¬²»ÄÜ½¨
+    else //è¡¨å·²å­˜åœ¨ï¼Œä¸èƒ½å»º
     {
         printf("Table %s already exist!\n", name);
         return;
     }
 
-    fseek(fp, 0L, SEEK_END); //ÒÆ¶¯Ö¸Õëµ½ÎÄ¼şÎ²
+    fseek(fp, 0L, SEEK_END); //ç§»åŠ¨æŒ‡é’ˆåˆ°æ–‡ä»¶å°¾
     char temp[10];
     scanf("%s", temp);
     if (strcmp(temp, "(") == 0) //(
@@ -430,9 +409,9 @@ void CreateTable(char *name)
         int num = 0;
         while (1)
         {
-            scanf("%15s%8s%d", FieldSet[num].sFieldName, FieldSet[num].sType, &(FieldSet[num].iSize)); //¶ÁÈ¡×Ö¶ÎÃû£¬×Ö¶ÎÀàĞÍ£¬×Ö¶Î×Ö³¤
+            scanf("%15s%8s%d", FieldSet[num].sFieldName, FieldSet[num].sType, &(FieldSet[num].iSize)); //è¯»å–å­—æ®µåï¼Œå­—æ®µç±»å‹ï¼Œå­—æ®µå­—é•¿
 
-            for (int i = 0; i < num; i++) //ÅĞ¶Ï×Ö¶ÎÊÇ·ñÒÑ´æÔÚ
+            for (int i = 0; i < num; i++) //åˆ¤æ–­å­—æ®µæ˜¯å¦å·²å­˜åœ¨
             {
                 if (strcmp(FieldSet[i].sFieldName, FieldSet[num].sFieldName) == 0)
                 {
@@ -442,51 +421,51 @@ void CreateTable(char *name)
                 }
             }
 
-            if (strcmp(FieldSet[num].sType, "char") == 0) //×Ö¶ÎÀàĞÍÊÇchar
+            if (strcmp(FieldSet[num].sType, "char") == 0) //å­—æ®µç±»å‹æ˜¯char
                 ;
-            else if (strcmp(FieldSet[num].sType, "int") == 0 || strcmp(FieldSet[num].sType, "double") == 0) //×Ö¶ÎÀàĞÍÊÇint»òÕßdouble
+            else if (strcmp(FieldSet[num].sType, "int") == 0 || strcmp(FieldSet[num].sType, "double") == 0) //å­—æ®µç±»å‹æ˜¯intæˆ–è€…double
             {
                 if (FieldSet[num].iSize != 1)
-                    FieldSet[num].iSize = 1; //×Ö¶Î³¤¶È²»Îª1
+                    FieldSet[num].iSize = 1; //å­—æ®µé•¿åº¦ä¸ä¸º1
             }
-            else //×Ö¶ÎÀàĞÍ²»Ö§³Ö
+            else //å­—æ®µç±»å‹ä¸æ”¯æŒ
             {
                 printf("Fieldtype must in (\"int\",\"char\",\"double\")!\n");
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
                 return;
             }
 
             char tempKey[10];
-            scanf("%s", tempKey); //¶ÁÈ¡×Ö¶ÎÊÇ·ñÎªÖ÷¼ü
+            scanf("%s", tempKey); //è¯»å–å­—æ®µæ˜¯å¦ä¸ºä¸»é”®
             FieldSet[num].bKey = tempKey[0];
-            if (FieldSet[num].bKey != 'n' && FieldSet[num].bKey != 'y') //ÊäÈëbKey²»ºÏ·¨
+            if (FieldSet[num].bKey != 'n' && FieldSet[num].bKey != 'y') //è¾“å…¥bKeyä¸åˆæ³•
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
                 return;
             }
             //printf("%s%s%d%c", FieldSet[num].sFieldName, FieldSet[num].sType, FieldSet[num].iSize, FieldSet[num].bKey);
 
             char tempNull[10];
-            scanf("%s", tempNull); //¶ÁÈ¡×Ö¶ÎÊÇ·ñÎª¿Õ
+            scanf("%s", tempNull); //è¯»å–å­—æ®µæ˜¯å¦ä¸ºç©º
             FieldSet[num].bNullFlag = tempNull[0];
-            if (FieldSet[num].bNullFlag != 'n' && FieldSet[num].bNullFlag != 'y') //ÊäÈëbNullFlag²»ºÏ·¨
+            if (FieldSet[num].bNullFlag != 'n' && FieldSet[num].bNullFlag != 'y') //è¾“å…¥bNullFlagä¸åˆæ³•
             {
-                printf("ÃüÁîÓï¾äÓĞÎó!\n");
+                printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
                 fflush(stdin);
                 return;
             }
 
-            FieldSet[num].bValidFlag = 'y'; //Ä¬ÈÏ×Ö¶ÎÓĞĞ§
+            FieldSet[num].bValidFlag = 'y'; //é»˜è®¤å­—æ®µæœ‰æ•ˆ
             num++;
-            if (tempNull[1] == ',') //Èç¹ûÓĞ¶ººÅËµÃ÷»¹ÓĞÏÂÒ»¸ö×Ö¶Î£¬·ñÔòÌø³öÑ­»·
+            if (tempNull[1] == ',') //å¦‚æœæœ‰é€—å·è¯´æ˜è¿˜æœ‰ä¸‹ä¸€ä¸ªå­—æ®µï¼Œå¦åˆ™è·³å‡ºå¾ªç¯
                 continue;
             else
                 break;
         }
         scanf("%s", temp);
-        if (strcmp(temp, ")") == 0) //) ¸ñÊ½ÕıÈ·£¬´æÈë±íĞÅÏ¢
+        if (strcmp(temp, ")") == 0) //) æ ¼å¼æ­£ç¡®ï¼Œå­˜å…¥è¡¨ä¿¡æ¯
         {
             fwrite("~", sizeof(char), 1, fp);
             fwrite(name, sizeof(char), FILE_NAME_LENGTH, fp);
@@ -497,13 +476,13 @@ void CreateTable(char *name)
         }
         else
         {
-            printf("ÃüÁîÓï¾äÓĞÎó!\n");
+            printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
             fflush(stdin);
         }
     }
     else
     {
-        printf("ÃüÁîÓï¾äÓĞÎó!\n");
+        printf("å‘½ä»¤è¯­å¥æœ‰è¯¯!\n");
         fflush(stdin);
     }
 }
@@ -512,14 +491,14 @@ void DropTable(char *name)
 {
     //printf("drop table %s\n", name);
 
-    if (dopens == 0) //µ±Ç°Î´´ò¿ªÊı¾İ¿â
+    if (dopens == 0) //å½“å‰æœªæ‰“å¼€æ•°æ®åº“
     {
         printf("No database is open!\nPlease open database first!\n");
         return;
     }
 
     fseek(fp, 0L, SEEK_SET);
-    int find = 0; //0±íÊ¾Î´ÕÒµ½£¬1±íÊ¾ÕÒµ½
+    int find = 0; //0è¡¨ç¤ºæœªæ‰¾åˆ°ï¼Œ1è¡¨ç¤ºæ‰¾åˆ°
     while (!feof(fp))
     {
         char tempc;
@@ -531,17 +510,17 @@ void DropTable(char *name)
         {
             break;
         }
-        if (tempc != '~') //¸ñÊ½²»¶Ô
+        if (tempc != '~') //æ ¼å¼ä¸å¯¹
         {
             printf("%s format not correct or %s is NULL!\n", dbf, dbf);
             fseek(fp, 0L, SEEK_SET);
             return;
         }
 
-        fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //¶ÁÈ¡±íÃû
-        fread(&num, sizeof(int), 1, fp);                     //¶ÁÈ¡×Ö¶ÎÊı
-        fread(FieldSet, sizeof(TableMode), num, fp);         //¶ÁÈ¡½á¹¹
-        if (strcmp(tempName, name) == 0)                     //ÕÒµ½ÁË±í
+        fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //è¯»å–è¡¨å
+        fread(&num, sizeof(int), 1, fp);                     //è¯»å–å­—æ®µæ•°
+        fread(FieldSet, sizeof(TableMode), num, fp);         //è¯»å–ç»“æ„
+        if (strcmp(tempName, name) == 0)                     //æ‰¾åˆ°äº†è¡¨
         {
             find = 1;
             fseek(fp, 0L, SEEK_SET);
@@ -566,21 +545,21 @@ void DropTable(char *name)
                 char tempc, tempName[20];
                 int temp;
                 TableMode tempField[MAX_SIZE];
-                fread(&tempc, sizeof(char), 1, fp); //¶ÁÈ¡~
+                fread(&tempc, sizeof(char), 1, fp); //è¯»å–~
                 if (tempc != '~')
                     break;
-                fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //¶ÁÈ¡±íÃû
-                fread(&temp, sizeof(int), 1, fp);                    //¶ÁÈ¡×Ö¶ÎÊı
-                fread(tempField, sizeof(TableMode), temp, fp);       //¶ÁÈ¡½á¹¹
+                fread(tempName, sizeof(char), FILE_NAME_LENGTH, fp); //è¯»å–è¡¨å
+                fread(&temp, sizeof(int), 1, fp);                    //è¯»å–å­—æ®µæ•°
+                fread(tempField, sizeof(TableMode), temp, fp);       //è¯»å–ç»“æ„
 
-                if (strcmp(tempName, name) == 0) //Èç¹ûÊÇ±»É¾³ı±íÔòÌø¹ı
+                if (strcmp(tempName, name) == 0) //å¦‚æœæ˜¯è¢«åˆ é™¤è¡¨åˆ™è·³è¿‡
                     continue;
                 else
                 {
-                    fwrite(&tempc, sizeof(char), 1, np);                  //Ğ´Èë~
-                    fwrite(tempName, sizeof(char), FILE_NAME_LENGTH, np); //Ğ´Èë±íÃû
-                    fwrite(&temp, sizeof(int), 1, np);                    //Ğ´Èë×Ö¶ÎÊı
-                    fwrite(tempField, sizeof(TableMode), temp, np);       //Ğ´Èë½á¹¹
+                    fwrite(&tempc, sizeof(char), 1, np);                  //å†™å…¥~
+                    fwrite(tempName, sizeof(char), FILE_NAME_LENGTH, np); //å†™å…¥è¡¨å
+                    fwrite(&temp, sizeof(int), 1, np);                    //å†™å…¥å­—æ®µæ•°
+                    fwrite(tempField, sizeof(TableMode), temp, np);       //å†™å…¥ç»“æ„
                 }
             }
 
@@ -594,9 +573,9 @@ void DropTable(char *name)
             char tName[20];
             strcpy(tName, name);
             strcat(tName, ".dat");
-            if (remove(tName) == 0) //É¾³ı³É¹¦
+            if (remove(tName) == 0) //åˆ é™¤æˆåŠŸ
                 ;
-            else //²»³É¹¦£¬Êä³ö´íÎó
+            else //ä¸æˆåŠŸï¼Œè¾“å‡ºé”™è¯¯
                 printf("%s\n", strerror(errno));
 
             if ((fp = fopen(dbf, "rb+")) == NULL)
@@ -619,13 +598,13 @@ void ViewTable(char *name)
     int num = OpenTable(name, FieldSet);
     //topens = 0;
 
-    if (num == -1) //-1±íÊ¾Ã»ÕÒµ½±í
+    if (num == -1) //-1è¡¨ç¤ºæ²¡æ‰¾åˆ°è¡¨
         printf("No such table!\n");
-    else if (num == 0) //0±íÊ¾Ã»ÓĞ×Ö¶Î
+    else if (num == 0) //0è¡¨ç¤ºæ²¡æœ‰å­—æ®µ
         printf("No field in table!\n");
     else
     {
-        printf("FieldName      Type    Size Key  Null Valid\n"); //Êä³öĞÅÏ¢
+        printf("FieldName      Type    Size Key  Null Valid\n"); //è¾“å‡ºä¿¡æ¯
         for (int i = 0; i < num; i++)
             printf("%-15s%-8s%-5d%c    %c    %c\n", FieldSet[i].sFieldName, FieldSet[i].sType,
                    FieldSet[i].iSize, FieldSet[i].bKey, FieldSet[i].bNullFlag, FieldSet[i].bValidFlag);
