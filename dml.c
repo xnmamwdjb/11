@@ -102,8 +102,10 @@ void Insert(char* name,char* value){
    /*获得表结构列表值*/
     TableMode FieldSet[MAX_SIZE];
     int num = OpenTable(tname, FieldSet);//局部变量，用来得到表的字段个数值
-    if (num == -1)
+    if (num == -1){
         printf("No such table!\n");
+        return;
+    }
     else if (num == 0)
         printf("No field in table!\n");
     else
@@ -156,9 +158,9 @@ void Insert(char* name,char* value){
         }
         fclose(dp);  
     }
-        
+    printf("Insert into %s %s successfully!\n",name,value);   
     }
-    printf("Insert into %s %s successfully!\n",name,value);
+    
 }
 
 /**删除函数，来对指定数据进行删除*/
@@ -194,6 +196,15 @@ void Delete(char* tableName,char* colName,char* value){
     strcpy(tname,tableName);
     TableMode FieldSet[MAX_SIZE];
     int num = OpenTable(tname,FieldSet);
+    if (num == -1){
+        printf("No such table!\n");
+        return ;
+    }
+    else if(num == 0){
+        printf("No field in table!\n");
+        return ;
+    }
+    else{
     strcat(tname,".dat");
     //打开对应的文件
     dp = fopen(tname,"rb+");
@@ -290,8 +301,11 @@ void Delete(char* tableName,char* colName,char* value){
     fclose(dp);
     remove(tname);
     rename("temp.dat",tname);
-    }
+
     printf("delete from %s where %s = %s successfully!\n",tableName,colName,value);
+    }
+    }
+    
 }
 /**更新函数，对指定数据进行更新操作*/
 void update(char* newColName ,char* newValue,char* tableName,char* colName,char* value){
@@ -495,6 +509,8 @@ void update(char* newColName ,char* newValue,char* tableName,char* colName,char*
     fclose(dp);
     remove(tname);
     rename("temp.dat",tname);
-    }
+
+
     printf("update %s = %s from %s where %s = %s successfully!\n",tableName,newColName,newValue,colName,value);
+    }
 }
