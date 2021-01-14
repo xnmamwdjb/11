@@ -302,6 +302,14 @@ void RenameTable(char *oldName, char *newName)
             fseek(fp, long((-1) * sizeof(char) * FILE_NAME_LENGTH), SEEK_CUR);
             fwrite(newName, sizeof(char), FILE_NAME_LENGTH, fp);
             printf("rename table %s %s successfully!\n", oldName, newName);
+
+            char olddat[20],newdat[20];
+            strcpy(olddat,oldName);
+            strcat(olddat,".dat");
+            strcpy(newdat,newName);
+            strcat(newdat,".dat");
+            rename(olddat,newdat);
+            
             fseek(fp, 0L, SEEK_SET);
             return;
         }
