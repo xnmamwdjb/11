@@ -511,6 +511,6 @@ void update(char* newColName ,char* newValue,char* tableName,char* colName,char*
     rename("temp.dat",tname);
 
 
-    printf("update %s = %s from %s where %s = %s successfully!\n",tableName,newColName,newValue,colName,value);
+    printf("update %s = %s from %s where %s = %s successfully!\n",newColName,newValue,tableName,colName,value);
     }
 }
