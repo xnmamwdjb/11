@@ -406,7 +406,7 @@ void CreateTable(char *name)
     //printf("create table %s\n", name);
     //fp = fopen("data.dbf", "ab+");
 
-    if (fp == NULL || dopens == 0) //当前未打开数据库
+    if (dopens == 0) //当前未打开数据库
     {
         printf("No database is open!\nPlease open database first!\n");
         return;
@@ -431,7 +431,18 @@ void CreateTable(char *name)
         while (1)
         {
             scanf("%15s%8s%d", FieldSet[num].sFieldName, FieldSet[num].sType, &(FieldSet[num].iSize)); //读取字段名，字段类型，字段字长
-            if (strcmp(FieldSet[num].sType, "char") == 0)                                              //字段类型是char
+
+            for (int i = 0; i < num; i++) //判断字段是否已存在
+            {
+                if (strcmp(FieldSet[i].sFieldName, FieldSet[num].sFieldName) == 0)
+                {
+                    printf("Field %s already exists!\n", FieldSet[num].sFieldName);
+                    fflush(stdin);
+                    return;
+                }
+            }
+
+            if (strcmp(FieldSet[num].sType, "char") == 0) //字段类型是char
                 ;
             else if (strcmp(FieldSet[num].sType, "int") == 0 || strcmp(FieldSet[num].sType, "double") == 0) //字段类型是int或者double
             {
@@ -501,7 +512,7 @@ void DropTable(char *name)
 {
     //printf("drop table %s\n", name);
 
-    if (fp == NULL || dopens == 0) //当前未打开数据库
+    if (dopens == 0) //当前未打开数据库
     {
         printf("No database is open!\nPlease open database first!\n");
         return;
